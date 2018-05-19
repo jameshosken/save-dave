@@ -7,7 +7,8 @@ console.log("Server managed to start. At least.")
 // Require all things socket.io
 var app = require('express')();
 var http = require('http').Server(app);
-var io = require('socket.io')(http);
+//var io = require('socket.io')(http);
+var io = require('socket.io')(http, {transports: ['websocket']});
 console.log("socket.io requirements loaded successfully")
 
 // Require all things twitter
@@ -42,7 +43,27 @@ app.get('/', function(req, res){
 
 //Listen for new socket connection
 io.on('connection', function(socket){
-  console.log('a user connected');
+  console.log("New user connected");
+
+	socket.on('requestMap', (data) => {
+	  console.log("Sending Map");
+	  socket.send('sendMap');
+	});
+  // socket.on("requestMap", function(){
+
+  // 	// socket.send("sendMap", getGameMap(getGameMap));
+  // 	socket.send('sendMap');
+  // 	console.log("Map Sent")
+  // });
+
+  socket.on('error', function(e){
+    console.log('error');
+    console.log(e);
+  });
+  socket.on('disconnect', function(){
+    console.log('user disconnected');
+  });
+
 });
 
 // Upon receiving a new tweet, do somthing.
@@ -55,3 +76,24 @@ stream.on('tweet', function (tweet) {
 http.listen(3000, function(){
   console.log('listening on *:3000');
 });
+
+
+///////////////
+//GAME ENGINE//
+///////////////
+
+/*
+	Game map is an array of arrays. Each inside array is a row.
+	To reference 3 down, 2 across, you would call gameMap[2][1];
+*/
+
+
+var gameMap = [	[0,0,0,1,0],
+				[1,1,0,0,0],
+				[0,0,0,1,1],
+				[0,1,0,1,0],
+				[0,0,0,0,0]]
+
+var getGameMap = function(){
+	return gameMap;
+}
