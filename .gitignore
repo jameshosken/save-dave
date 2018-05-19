@@ -33,5 +33,6 @@ sysinfo.txt
 *.apk
 *.unitypackage
 
-# Keys and stuff
-*/keys/
+# Keys and node stuff
+*/[Kk]eys/
+*/node_modules/
