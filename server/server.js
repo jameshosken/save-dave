@@ -1,4 +1,4 @@
-var keys = require("./keys.js");
+var keys = require(".keys/keys.js");
 
 console.log(keys.getAPIKey())
 console.log(keys.getAPISecret())
