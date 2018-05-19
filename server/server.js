@@ -1,13 +1,9 @@
+
+// All things twitter
 var keys = require("./keys/keys.js");
-
-console.log(keys.getAPIKey())
-console.log(keys.getAPISecret())
-console.log(keys.getAccessToken())
-console.log(keys.getAccessTokenSecret())
-
-
 var Twit = require('twit')
 
+// Set up new twit object
 var T = new Twit({
   consumer_key:         keys.getAPIKey(),
   consumer_secret:      keys.getAPISecret(),
@@ -16,8 +12,10 @@ var T = new Twit({
   timeout_ms:           60*1000,  // optional HTTP request timeout to apply to all requests.
 })
 
-var stream = T.stream('statuses/filter', { track: 'elephant' })
+// Set up a listener for updates on the twitter stream
+var stream = T.stream('statuses/filter', { track: 'goright' })
 
+// Upon receiving a new tweet, do somthing.
 stream.on('tweet', function (tweet) {
   console.log("Text: " + tweet.text)
   console.log("By: " + tweet.user.name)
