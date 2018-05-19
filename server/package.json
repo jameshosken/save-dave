@@ -2,5 +2,8 @@
   "name": "twitter-unity-controller",
   "version": "0.0.1",
   "description": "A way to interface with Unity via the public twitter stream",
-  "dependencies": {}
+  "dependencies": {
+    "express": "^4.16.3",
+    "twit": "^2.2.9"
+  }
 }
