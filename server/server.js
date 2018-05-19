@@ -1,7 +1,18 @@
+console.log("Server managed to start. At least.")
 
-// All things twitter
+/////////
+//SETUP//
+/////////
+
+// Require all things socket.io
+var app = require('express')();
+var http = require('http').Server(app);
+console.log("socket.io requirements loaded successfully")
+
+// Require all things twitter
 var keys = require("./keys/keys.js");
 var Twit = require('twit')
+console.log("twitter requirements loaded successfully")
 
 // Set up new twit object
 var T = new Twit({
@@ -14,6 +25,19 @@ var T = new Twit({
 
 // Set up a listener for updates on the twitter stream
 var stream = T.stream('statuses/filter', { track: 'goright' })
+console.log("twitter listener started successfully");
+
+//////////
+//ROUTES//
+//////////
+
+app.get('/', function(req, res){
+  res.send('<h1>Hello world</h1>');
+});
+
+/////////////
+//LISTENERS//
+/////////////
 
 // Upon receiving a new tweet, do somthing.
 stream.on('tweet', function (tweet) {
@@ -21,3 +45,8 @@ stream.on('tweet', function (tweet) {
   console.log("By: " + tweet.user.name)
   console.log("--- END ---");
 })
+
+http.listen(3000, function(){
+  console.log('listening on *:3000');
+});
+    
