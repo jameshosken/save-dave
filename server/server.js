@@ -7,6 +7,7 @@ console.log("Server managed to start. At least.")
 // Require all things socket.io
 var app = require('express')();
 var http = require('http').Server(app);
+var io = require('socket.io')(http);
 console.log("socket.io requirements loaded successfully")
 
 // Require all things twitter
@@ -38,6 +39,11 @@ app.get('/', function(req, res){
 /////////////
 //LISTENERS//
 /////////////
+
+//Listen for new socket connection
+io.on('connection', function(socket){
+  console.log('a user connected');
+});
 
 // Upon receiving a new tweet, do somthing.
 stream.on('tweet', function (tweet) {
