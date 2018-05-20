@@ -115,7 +115,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1844516766082868
 GameObject:
   m_ObjectHideFlags: 0
@@ -661,3 +661,4 @@ MonoBehaviour:
   - {fileID: 1314516974414806}
   floor: {fileID: 1305305897867502}
   goal: {fileID: 1222968696774194}
+  label: {fileID: 1370318727202280}

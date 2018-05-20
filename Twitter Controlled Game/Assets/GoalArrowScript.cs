@@ -14,6 +14,6 @@ public class GoalArrowScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        transform.LookAt(new Vector3(0, 0, 0), Vector3.up);
+        transform.LookAt(new Vector3(0, 1, 0), Vector3.up);
 	}
 }
