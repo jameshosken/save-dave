@@ -72,11 +72,13 @@ public class SocketHandler : MonoBehaviour
 		if (e.data == null) { return; }
 
         JSONObject j = e.data;
+        ParseMapData(j);
+        /*
         mapHandler.SetMapData( ParseMapData(j) );
         mapHandler.PrintMapData();
         mapHandler.ConstructMapWithTiles();
-        
-	}
+        */
+    }
 	
 	public void SocketError(SocketIOEvent e)
 	{
@@ -93,28 +95,96 @@ public class SocketHandler : MonoBehaviour
     //Parser Methods//
     //////////////////
 
-    int[,] ParseMapData(JSONObject container)
+    void ParseMapData(JSONObject container)
     {
-        JSONObject obj = container.list[0];
-        //New empty int dual array based on length of rows and length of cols from mapdata
-        //rows data in obj.list,
-        //cols data in first row, i.e. obj.list[0].list
-        int[,] myMap = new int[obj.list.Count, obj.list[0].list.Count];
 
-        int rownum = 0; //keep track of row number
-        foreach(JSONObject row in obj.list)
+
+        JSONObject obj = container.list[0];
+        
+
+        for(int i = 0; i < obj.list.Count; i++)
         {
-            int colnum = 0; // keep track of col number
-            foreach (JSONObject col in row.list)
+
+            JSONObject tile = obj.list[i];
+            int inX = 0, inY = 0;
+            bool[] inWalls = new bool[4];
+
+            for (int j = 0; j < tile.list.Count; j++)
             {
-                myMap[rownum, colnum] = (int) col.n;
-                colnum++;
+                JSONObject value = tile.list[j];  
+                switch (tile.keys[j])                                   //Parse each tile based on the keys in the JSON object
+                {
+                    case "x":
+                        inX = (int)value.n;                             //JSONObect defaults to float so must cast to int.
+                        break;
+                    case "y":
+                        inY = (int)value.n;
+                        break;
+                    case "walls":
+                        for(int k = 0; k < value.list.Count; k++)
+                        {
+                            inWalls[k] = value.list[k].b;
+                        }
+                        break;
+                    default:
+                        Debug.LogWarning("Unknown key");
+                        break;
+                }
+                
             }
-            rownum++;
+            Debug.Log("Adding tile: " + inX + ", " + inY);
+            mapHandler.AddNewTile(inX, inY, inWalls);
+
         }
 
+        /*
+            * Data coming in: 
+            * [ {  x: int,
+            *      y: int,
+            *      walls: [bool,bool,bool,bool]
+            *   }, etc
+            * ]
+            * 
+        
 
-        return myMap;
+
+
+        switch (obj.type)
+        {
+            case JSONObject.Type.OBJECT:
+                Debug.Log("IS OBJECT");
+                for (int i = 0; i < obj.list.Count; i++)
+                {
+                    string key = (string)obj.keys[i];
+                    JSONObject j = (JSONObject)obj.list[i];
+                    Debug.Log(key);
+                    if()
+                    ParseMapData(j);
+                }
+                break;
+            case JSONObject.Type.ARRAY:
+                Debug.Log("IS ARRAY");
+                foreach (JSONObject j in obj.list)
+                {
+                    ParseMapData(j);
+                }
+                break;
+            case JSONObject.Type.STRING:
+                Debug.Log("IS STRING");
+                Debug.Log(obj.str);
+                break;
+            case JSONObject.Type.NUMBER:
+                Debug.Log("IS NUMBER");
+                Debug.Log(obj.n);
+                break;
+            case JSONObject.Type.BOOL:
+                Debug.Log(obj.b);
+                break;
+            case JSONObject.Type.NULL:
+                Debug.Log("NULL");
+                break;
+        }
+        */
     }
 
     void ParseGeneralJSONData(JSONObject obj)

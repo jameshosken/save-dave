@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class TileHandler : MonoBehaviour {
 
-    [SerializeField] GameObject roadEmpty;
-    [SerializeField] GameObject roadBlocked;
+    [Tooltip("MUST be Up, Right, Down, Left")]
+    [SerializeField] GameObject[] walls;
 
     Vector2 positionInGrid;
+
+    bool[] wallsStatus;
 
     GameObject tileObject;
 
@@ -15,43 +17,20 @@ public class TileHandler : MonoBehaviour {
     enum TileStatus {Empty, Blocked};   //Setting this as enum rather than bool in case we add more statuses later
     TileStatus tileStatus = TileStatus.Empty;
 
-    private void Start()
-    {
 
-    }
-
-    public void SetPositionInGrid(int x, int y)
+   
+    public void SetPosition(int x, int y)
     {
         positionInGrid = new Vector2(x, y);
         transform.position = new Vector3(positionInGrid.x, 0, positionInGrid.y);
     }
 
-    public void SetEmptyStatus(int status)
+    public void SetWalls(bool[] wallData)
     {
-        switch (status)
+        wallsStatus = wallData;
+        for (int i = 0; i < walls.Length; i++)
         {
-            case 1:
-                tileStatus = TileStatus.Blocked;
-
-                break;
-            default:
-                tileStatus = TileStatus.Empty;
-                break;
+                walls[i].SetActive(wallsStatus[i]);
         }
-
-    }
-
-    public void ConstructTile()
-    {
-        switch (tileStatus)
-        {
-            case TileStatus.Blocked:
-                tileObject = Instantiate(roadBlocked, transform.position, Quaternion.identity);
-                break;
-            default:
-                tileObject = Instantiate(roadEmpty, transform.position, Quaternion.identity);
-                break;
-        }
-        tileObject.transform.SetParent(this.transform);
     }
 }

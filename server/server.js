@@ -39,7 +39,10 @@ io.on('connection', function(socket){
   //console.log("New user connected");
   socket.on('mapreq', function(){
     try{
-      socket.emit('mapres', {mapData: map.getMap()});
+      socket.emit('mapres', { mapData:  map.getMapToSend(), 
+                              mapSize:  map.getMapSize(), },
+                              mapStart: map.getMapStart(),
+                              mapEnd:   map.getMapEnd());
     }
     catch(err){
       console.log(err);
@@ -83,7 +86,7 @@ function Tile(x, y) {
   this.x = x;
   this.y = y;
   this.visited = false;
-  this.walls=[1,1,1,1]; //up,right,down,left
+  this.walls=[true,true,true,true]; //up,right,down,left
 
   this.setVisited = function(status){
     this.visited = status;
@@ -94,7 +97,7 @@ function Tile(x, y) {
   }
 
   this.removeWall = function(index){
-    this.walls[index] = 0;
+    this.walls[index] = false;
   }
 }
 
@@ -243,6 +246,12 @@ var Map = function(){
     }
     return mapData;
   }
+
+  this.getMapSize = function(){
+    return {x: this.map.length, y:this.map[i].length};
+  }
+
+
   this.printMap = function(){
     console.log("Printing Map:");
     for(var i = 0; i < this.map.length; i++){

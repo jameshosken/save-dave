@@ -5,42 +5,29 @@ using UnityEngine;
 public class MapHandler : MonoBehaviour {
 
 
-    [SerializeField] TileHandler tileTemplate;
-    int[,] mapData;
+    [SerializeField] GameObject tileTemplate;
 
-    public void SetMapData(int[,] inData)
+
+    //rayList tiles = new ArrayList();
+
+    TileHandler[,] tiles;
+
+    public void SetTilesLength(int x, int y)
     {
-        mapData = inData;
+        //Nothing
     }
 
-    public void PrintMapData()
+    public void AddNewTile(int x, int y, bool[] walls)
     {
-        for (int i = 0; i < mapData.GetLength(0); i++)
-        {
-            string row = "";
-            for (int j = 0; j < mapData.GetLength(1); j++)
-            {
-                row += mapData[i, j].ToString();
-            }
-            print(row);
-        }
+        GameObject tile = Instantiate(tileTemplate.gameObject, transform.position, Quaternion.identity);
+        TileHandler tileHandler = tile.GetComponent<TileHandler>();
+        tileHandler.SetPosition(x, y);
+        tileHandler.SetWalls(walls);
     }
 
-    public void ConstructMapWithTiles()
+    public void SetStartTile()
     {
-        for (int x = 0; x < mapData.GetLength(0); x++)
-        {
-            for (int y = 0; y < mapData.GetLength(1); y++)
-            {
-                GameObject tile = Instantiate(tileTemplate.gameObject, transform.position, Quaternion.identity);
-                tile.transform.SetParent(this.transform);
-                TileHandler tileHandler = tile.GetComponent<TileHandler>();
-                tileHandler.SetPositionInGrid(x, y);
-                tileHandler.SetEmptyStatus(mapData[x, y]);
-                tileHandler.ConstructTile();
-            }
-        }
-    }
 
+    }
 
 }
