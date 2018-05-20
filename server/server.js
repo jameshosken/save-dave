@@ -39,6 +39,7 @@ io.on('connection', function(socket){
   console.log("New user connected");
   socket.on('mapreq', function(){
     socket.emit('mapres', {mapData: gameMap});
+
   });
 
   socket.on('error', function(e){
@@ -71,16 +72,31 @@ stream.on('tweet', function (tweet) {
 	To reference 3 down, 2 across, you would call gameMap[2][1];
 */
 
-var gameMap = [ [0,0,0,1,0,1,1,0,1,0],
-                [1,1,0,0,0,0,0,0,1,0],
-        				[0,0,0,1,1,1,1,0,1,1],
-        				[0,1,0,1,0,1,0,0,1,0],
-        				[0,0,0,0,1,1,1,0,0,0],
-                [0,0,0,1,0,1,1,0,1,0],
-                [1,1,0,0,0,0,0,0,1,0],
-                [0,0,0,1,1,1,1,0,1,1],
-                [0,1,0,1,0,1,0,0,1,0],
-                [0,0,0,0,1,1,1,0,0,0]] 
+// var gameMap = [ [0,0,0,1,0,1,1,0,1,0],
+//                 [1,1,0,0,0,0,0,0,1,0],
+//         				[0,0,0,1,1,1,1,0,1,1],
+//         				[0,1,0,1,0,1,0,0,1,0],
+//         				[0,0,0,0,1,1,1,0,0,0],
+//                 [0,0,0,1,0,1,1,0,1,0],
+//                 [1,1,0,0,0,0,0,0,1,0],
+//                 [0,0,0,1,1,1,1,0,1,1],
+//                 [0,1,0,1,0,1,0,0,1,0],
+//                 [0,0,0,0,1,1,1,0,0,0]];
+
+
+var constructMap = function(size){
+  var map = [];
+  for (var x = 0; x < size; x++) {
+    map.push([])
+    for (var y = 0; y < size; y++) {
+      map[x].push(Math.round(Math.random()));
+    }
+  }
+  return map;
+}
+
+var gameMap = constructMap(20);
+
 
 var getGameMap = function(){
 	return gameMap;

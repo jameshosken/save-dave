@@ -67,7 +67,7 @@ public class SocketHandler : MonoBehaviour
 	
 	public void MapDataFromServer(SocketIOEvent e)
 	{
-		Debug.Log("[SocketIO] DATA received: " + e.name);
+		Debug.Log("[SocketIO] DATA received: " + e.name + " " + e.data);
 
 		if (e.data == null) { return; }
 
