@@ -51,5 +51,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ab32f332f0627546adb3739b6700b32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roadEmpty: {fileID: 0}
-  roadBlocked: {fileID: 0}
+  roadEmpty: {fileID: 1434321897520612, guid: b11cd71d9da86f54aaeaec15dbbdd17c, type: 2}
+  roadBlocked: {fileID: 1099563481673240, guid: cb1b2adc8da311442874d87e0154b54a,
+    type: 2}
