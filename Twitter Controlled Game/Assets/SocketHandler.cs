@@ -30,16 +30,25 @@ using System.Collections;
 using UnityEngine;
 using SocketIO;
 using System.Collections.Generic;
+using UnityEngine.UI;
+using System;
 
 public class SocketHandler : MonoBehaviour
 {
+
+    [SerializeField] Text tweetRoll;
+
+    [SerializeField] int maxTweetsInRoll;
 
 	private SocketIOComponent socket;
     private MapHandler mapHandler;
     private PlayerMovement playerMovement;
     bool isOpen = false;
 
-	public void Start() 
+    Queue<string> tweetTexts = new Queue<string>();
+    Queue<string> tweetNames = new Queue<string>();
+
+    public void Start() 
 	{
 		socket = gameObject.GetComponent<SocketIOComponent>();
         mapHandler = GameObject.Find("Map").GetComponent<MapHandler>();
@@ -54,6 +63,7 @@ public class SocketHandler : MonoBehaviour
         //Custom socket messages
         socket.On("mapres", MapDataFromServer);
         socket.On("newmove", PositionDataFromServer);
+        socket.On("newtweet", TweetDataFromServer);
 
     }
 
@@ -90,6 +100,18 @@ public class SocketHandler : MonoBehaviour
         ParsePositionData(j);
 
     }
+
+    public void TweetDataFromServer(SocketIOEvent e)
+    {
+        Debug.Log("[SocketIO] DATA received: " + e.name + " " + e.data);
+
+        if (e.data == null) { return; }
+
+        JSONObject j = e.data;
+        ParseTweetData(j);
+    }
+
+    
 
     public void SocketError(SocketIOEvent e)
 	{
@@ -180,6 +202,35 @@ public class SocketHandler : MonoBehaviour
         playerMovement.SetPlayerPosition((int)obj.list[0].n, (int)obj.list[1].n);
 
 
+    }
+
+    private void ParseTweetData(JSONObject j)
+    {
+        Debug.Log("Parsing tweet");
+        tweetRoll.text = "";
+        if(tweetNames.Count > 5)
+        {
+            tweetNames.Dequeue();
+            tweetTexts.Dequeue();
+            
+        }
+        Debug.Log(j);
+        tweetNames.Enqueue( j.list[0].str );
+        tweetTexts.Enqueue( j.list[1].str );
+        
+        
+        for (int i = 0; i < tweetNames.Count; i++)  //Super stupid way of cycling through texts but the only way I can think of right now
+        {
+            string tweetName = tweetNames.Dequeue();
+            string tweetText = tweetTexts.Dequeue();
+            Debug.Log("ADDING TO ROLL");
+            Debug.Log("Tweet: " + tweetText + "\nBy: " + tweetName + "\n\n");
+            tweetRoll.text += "Tweet: " + tweetText + "\nBy: " + tweetName + "\n\n";
+
+            tweetNames.Enqueue(tweetName);
+            tweetTexts.Enqueue(tweetText);
+        }
+        
     }
 
     void ParseGeneralJSONData(JSONObject obj)

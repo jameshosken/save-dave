@@ -65,3 +65,9 @@ Listeners:
 # Twitter activation
 
 #savedave
+
+
+---
+# Extra things to have
+- A log of all #savedave tweets
+	(add "4) You can see a history of #savedave tweets at generallyplayful.com/savedave" to UI )

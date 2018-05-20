@@ -63,6 +63,13 @@ var SendPosition = function(socket){
   socket.emit("newmove", player.GetPlayerPosition());
 }
 
+var SendTweet = function(socket, tweet){
+  socket.emit('newtweet', { name: tweet.user.name,
+                            text: tweet.text
+                          });
+
+}
+
 /////////////
 //LISTENERS//
 /////////////
@@ -115,6 +122,8 @@ stream.on('tweet', function (tweet) {
   if(player.UpdateLocation(direction)){
     console.log("Successful move! Sending position to clients");
     SendPosition(io);
+    SendTweet(io,tweet);
+
     console.log("---")
     console.log("TWEET: " + tweet.text);
     console.log("BY: " + tweet.user.name);

@@ -51,9 +51,9 @@ public class TileHandler : MonoBehaviour {
     public void SetAsStart()
     {
         tileStatus = TileStatus.Start;
-        floor.GetComponent<MeshRenderer>().material.EnableKeyword("_EMISSION");
 
-        floor.GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", Color.red);
+        //floor.GetComponent<MeshRenderer>().material.EnableKeyword("_EMISSION");
+        //floor.GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", Color.red);
     }
 
     public void SetAsEnd()
