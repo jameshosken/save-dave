@@ -14,6 +14,14 @@ public class MapHandler : MonoBehaviour {
 
     public void SetMapSize(int x, int y)
     {
+        //Refresh called, delete old tiles
+        if (tiles != null)
+        {
+            foreach (TileHandler tile in tiles)
+            {
+                GameObject.Destroy(tile.gameObject);
+            }
+        }
         tiles = new TileHandler[x, y];
     }
 

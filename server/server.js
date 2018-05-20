@@ -1,7 +1,7 @@
 console.log("Server managed to start. At least.")
 
 //Nasty global variables
-var stringToTrack = "#savedave";
+var stringToTrack = "direction";
 var mapSize = 5;
 var map;
 var player;
@@ -60,7 +60,7 @@ var SendMap = function(socket){
 
 var SendPosition = function(socket){
   console.log("Send New Position");
-  io.emit("newmove", player.GetPlayerPosition());
+  socket.emit("newmove", player.GetPlayerPosition());
 }
 
 /////////////
@@ -94,25 +94,37 @@ io.on('connection', function(socket){
 // Upon receiving a new tweet, do somthing.
 stream.on('tweet', function (tweet) {
   console.log("NEW TWEET");
-  console.log("Text: " + tweet.text);
-  console.log("By: " + tweet.user.name);
+  
 
-  //Directions: 0 == UP, 1 == RIGHT, 2 == DOWN, 3 == LEFT
-
-  var direction = Math.floor(Math.random() * 4);
+  var tweetData = tweet.text.toLowerCase();
+  var direction;
+  if(tweetData.includes("up")){
+    direction = 0;
+  }else if(tweetData.includes("right")){
+    direction = 1;
+  }else if(tweetData.includes("down")){
+    direction = 2;
+  }else if(tweetData.includes("left")){
+    direction = 3;
+  }else{
+    console.log("No movement");
+    return;
+  }
 
   console.log("Attempting to move player: " + direction);
   if(player.UpdateLocation(direction)){
-    console.log("Successful move! Sending to clients");
-    io.emit("newmove", player.GetPlayerPosition());
-
+    console.log("Successful move! Sending position to clients");
+    SendPosition(io);
+    console.log("---")
+    console.log("TWEET: " + tweet.text);
+    console.log("BY: " + tweet.user.name);
     player.path.push({name: tweet.name, text: tweet.text});
   }
   else{
-    console.log("Oops, something went wrong")
+    console.log("There's a wall in the way, sorry");
   }
 
-  console.log("--- END ---\n\n");
+  console.log("///////////////")
 })
 
 /////////////////////////////////////////////////////////////////////////////////
