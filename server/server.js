@@ -5,10 +5,10 @@ console.log("Server managed to start. At least.")
 /////////
 
 // Require all things socket.io
-var app = require('express')();
-var http = require('http').Server(app);
-//var io = require('socket.io')(http);
-var io = require('socket.io')(http, {transports: ['websocket']});
+var io = require('socket.io')({transports: ['websocket'],});
+io.attach(3000);
+console.log("Listening on port 4567");
+
 console.log("socket.io requirements loaded successfully")
 
 // Require all things twitter
@@ -29,42 +29,29 @@ var T = new Twit({
 var stream = T.stream('statuses/filter', { track: 'goright' })
 console.log("twitter listener started successfully");
 
-//////////
-//ROUTES//
-//////////
-
-app.get('/', function(req, res){
-  res.send('<h1>Hello world</h1>');
-});
-
 /////////////
 //LISTENERS//
 /////////////
 
 //Listen for new socket connection
 io.on('connection', function(socket){
+
   console.log("New user connected");
-
-	socket.on('requestMap', (data) => {
-	  console.log("Sending Map");
-	  socket.send('sendMap');
-	});
-  // socket.on("requestMap", function(){
-
-  // 	// socket.send("sendMap", getGameMap(getGameMap));
-  // 	socket.send('sendMap');
-  // 	console.log("Map Sent")
-  // });
+  socket.on('mapreq', function(){
+    socket.emit('mapres', {mapData: gameMap});
+  });
 
   socket.on('error', function(e){
     console.log('error');
     console.log(e);
   });
+
   socket.on('disconnect', function(){
     console.log('user disconnected');
   });
 
-});
+})
+
 
 // Upon receiving a new tweet, do somthing.
 stream.on('tweet', function (tweet) {
@@ -73,9 +60,6 @@ stream.on('tweet', function (tweet) {
   console.log("--- END ---");
 })
 
-http.listen(3000, function(){
-  console.log('listening on *:3000');
-});
 
 
 ///////////////
@@ -87,12 +71,11 @@ http.listen(3000, function(){
 	To reference 3 down, 2 across, you would call gameMap[2][1];
 */
 
-
-var gameMap = [	[0,0,0,1,0],
-				[1,1,0,0,0],
-				[0,0,0,1,1],
-				[0,1,0,1,0],
-				[0,0,0,0,0]]
+var gameMap = [ [0,0,0,1,0],
+                [1,1,0,0,0],
+        				[0,0,0,1,1],
+        				[0,1,0,1,0],
+        				[0,0,0,0,0]] 
 
 var getGameMap = function(){
 	return gameMap;
