@@ -74,6 +74,7 @@ public class SocketHandler : MonoBehaviour
         JSONObject j = e.data;
         mapHandler.SetMapData( ParseMapData(j) );
         mapHandler.PrintMapData();
+        mapHandler.ConstructMapWithTiles();
         
 	}
 	
