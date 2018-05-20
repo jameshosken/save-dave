@@ -7,6 +7,7 @@ public class TileHandler : MonoBehaviour {
     [Tooltip("MUST be Up, Right, Down, Left")]
     [SerializeField] GameObject[] walls;
     [SerializeField] GameObject floor;
+    [SerializeField] GameObject goal;
 
     Vector2 positionInGrid;
 
@@ -55,9 +56,10 @@ public class TileHandler : MonoBehaviour {
     public void SetAsEnd()
     {
         tileStatus = TileStatus.End;
-        floor.GetComponent<MeshRenderer>().material.EnableKeyword("_EMISSION");
+        //floor.GetComponent<MeshRenderer>().material.EnableKeyword("_EMISSION");
 
-        floor.GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", Color.green);
+        //floor.GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", Color.green);
+        goal.SetActive(true);
     }
 
     public void SetAsEmpty()

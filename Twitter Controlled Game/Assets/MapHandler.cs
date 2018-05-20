@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class MapHandler : MonoBehaviour {
 
-
     [SerializeField] GameObject tileTemplate;
+
 
 
     //rayList tiles = new ArrayList();
