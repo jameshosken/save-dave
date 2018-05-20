@@ -30,6 +30,8 @@ public class TileHandler : MonoBehaviour {
     {
         positionInGrid = new Vector2(x, y);
         transform.position = new Vector3(positionInGrid.x, 0, positionInGrid.y);
+
+        GetComponentInChildren<TextMesh>().text = x.ToString() + "," +  y.ToString();
     }
 
     public void SetWalls(bool[] wallData)

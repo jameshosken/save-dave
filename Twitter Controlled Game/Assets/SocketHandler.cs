@@ -36,12 +36,14 @@ public class SocketHandler : MonoBehaviour
 
 	private SocketIOComponent socket;
     private MapHandler mapHandler;
+    private PlayerMovement playerMovement;
     bool isOpen = false;
 
 	public void Start() 
 	{
 		socket = gameObject.GetComponent<SocketIOComponent>();
         mapHandler = GameObject.Find("Map").GetComponent<MapHandler>();
+        playerMovement = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>();
         
 
         //Default socket messages
@@ -51,6 +53,7 @@ public class SocketHandler : MonoBehaviour
 
         //Custom socket messages
         socket.On("mapres", MapDataFromServer);
+        socket.On("newmove", PositionDataFromServer);
 
     }
 
@@ -73,14 +76,22 @@ public class SocketHandler : MonoBehaviour
 
         JSONObject j = e.data;
         ParseMapData(j);
-        /*
-        mapHandler.SetMapData( ParseMapData(j) );
-        mapHandler.PrintMapData();
-        mapHandler.ConstructMapWithTiles();
-        */
+
+        socket.Emit("posreq");
     }
-	
-	public void SocketError(SocketIOEvent e)
+
+    public void PositionDataFromServer(SocketIOEvent e)
+    {
+        Debug.Log("[SocketIO] DATA received: " + e.name + " " + e.data);
+
+        if (e.data == null) { return; }
+
+        JSONObject j = e.data;
+        ParsePositionData(j);
+
+    }
+
+    public void SocketError(SocketIOEvent e)
 	{
 		Debug.Log("[SocketIO] Error received: " + e.name + " " + e.data);
 	}
@@ -156,6 +167,18 @@ public class SocketHandler : MonoBehaviour
         Debug.Log(obj);
 
         mapHandler.SetEndTile((int)obj.list[0].n, (int)obj.list[1].n);
+
+    }
+
+    void ParsePositionData(JSONObject obj)
+    {
+
+        //Handle Position Data
+        print("Handle Position Data");
+        Debug.Log(obj);
+
+        playerMovement.SetPlayerPosition((int)obj.list[0].n, (int)obj.list[1].n);
+
 
     }
 

@@ -1,5 +1,8 @@
 console.log("Server managed to start. At least.")
 
+var stringToTrack = "right";
+
+
 /////////
 //SETUP//
 /////////
@@ -26,7 +29,7 @@ var T = new Twit({
 })
 
 // Set up a listener for updates on the twitter stream
-var stream = T.stream('statuses/filter', { track: 'goright' })
+var stream = T.stream('statuses/filter', { track: stringToTrack })
 console.log("twitter listener started successfully");
 
 /////////////
@@ -50,6 +53,11 @@ io.on('connection', function(socket){
     }
   });
 
+  socket.on('posreq', function(){
+    console.log("New position request");
+    io.emit("newmove", player.GetPlayerPosition());
+  })
+
   socket.on('error', function(e){
     console.log('error');
     console.log(e);
@@ -64,9 +72,24 @@ io.on('connection', function(socket){
 
 // Upon receiving a new tweet, do somthing.
 stream.on('tweet', function (tweet) {
-  //console.log("Text: " + tweet.text)
-  //console.log("By: " + tweet.user.name)
-  //console.log("--- END ---");
+  console.log("NEW TWEET");
+  console.log("Text: " + tweet.text);
+  console.log("By: " + tweet.user.name);
+
+  //Directions: 0 == UP, 1 == RIGHT, 2 == DOWN, 3 == LEFT
+
+  var direction = Math.floor(Math.random() * 4);
+
+  console.log("Attempting to move player: " + direction);
+  if(player.UpdateLocation(direction)){
+    console.log("Successful move! Sending to clients");
+    io.emit("newmove", player.GetPlayerPosition());
+  }
+  else{
+    console.log("Oops, something went wrong")
+  }
+
+  console.log("--- END ---\n\n");
 })
 
 
@@ -220,6 +243,8 @@ var findPath = function(tile, map, searchStack){
   }
 }
 
+
+
 var Map = function(){
   this.map;
   this.searchStack = [];
@@ -271,12 +296,49 @@ var Map = function(){
   }
 }
 
+
+var Player = function(map){
+  console.log(map);
+  this.map = map;
+  this.location = map.getMapStart();        //{x:val, y:val}
+  this.tile = map.map[this.location.x][this.location.y];
+
+  this.directionArray =   [ {x:0,y:1},      //Up
+                            {x:1,y:0},      //Right
+                            {x:0,y:-1},     //Down
+                            {x:-1,y:0}      //Left
+                          ]
+
+  this.GetPlayerPosition = function(direction){
+    return this.location;
+  }
+
+  this.UpdateLocation = function(directionIndex){
+    //Checking for walls should also catch out of bounds errors
+    console.log(this.tile.walls);
+    try{
+      if(!this.tile.walls[directionIndex]){ //If there is no wall in the way
+        //figure out which tile to move to:
+        
+          this.location.x += this.directionArray[directionIndex].x;
+          this.location.y += this.directionArray[directionIndex].y;
+          this.tile = this.map.map[this.location.x][this.location.y];
+          return true;
+        }
+    }catch(err){
+      console.log("Problem updating location:");
+      console.log(err);
+    }
+    return false;
+  }
+}
+
+
+
 var map = new Map();
 map.CreateMap(10);
 map.PopulateMap();
-// map.printMap();
-console.log(map.getMapToSend());
+var player = new Player(map);
 
-
-
+var counter = 0;
 
