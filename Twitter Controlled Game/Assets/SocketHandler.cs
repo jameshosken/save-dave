@@ -97,11 +97,17 @@ public class SocketHandler : MonoBehaviour
 
     void ParseMapData(JSONObject container)
     {
+        //Handle Map Size
+        print("Handle Map Size");
+        JSONObject obj = container.list[1];
+        Debug.Log(obj);
 
+        mapHandler.SetMapSize((int)obj.list[0].n, (int)obj.list[1].n);
 
-        JSONObject obj = container.list[0];
+        //Handle Map Data
+        print("Handle Map Data");
+        obj = container.list[0];
         
-
         for(int i = 0; i < obj.list.Count; i++)
         {
 
@@ -137,54 +143,20 @@ public class SocketHandler : MonoBehaviour
 
         }
 
-        /*
-            * Data coming in: 
-            * [ {  x: int,
-            *      y: int,
-            *      walls: [bool,bool,bool,bool]
-            *   }, etc
-            * ]
-            * 
-        
+        //Handle Start tile
+        print("Handle Start Tile");
+        obj = container.list[2];
+        Debug.Log(obj);
 
+        mapHandler.SetStartTile((int)obj.list[0].n, (int)obj.list[1].n);
 
+        //Handle End Tile
+        print("Handle End Tile");
+        obj = container.list[3];
+        Debug.Log(obj);
 
-        switch (obj.type)
-        {
-            case JSONObject.Type.OBJECT:
-                Debug.Log("IS OBJECT");
-                for (int i = 0; i < obj.list.Count; i++)
-                {
-                    string key = (string)obj.keys[i];
-                    JSONObject j = (JSONObject)obj.list[i];
-                    Debug.Log(key);
-                    if()
-                    ParseMapData(j);
-                }
-                break;
-            case JSONObject.Type.ARRAY:
-                Debug.Log("IS ARRAY");
-                foreach (JSONObject j in obj.list)
-                {
-                    ParseMapData(j);
-                }
-                break;
-            case JSONObject.Type.STRING:
-                Debug.Log("IS STRING");
-                Debug.Log(obj.str);
-                break;
-            case JSONObject.Type.NUMBER:
-                Debug.Log("IS NUMBER");
-                Debug.Log(obj.n);
-                break;
-            case JSONObject.Type.BOOL:
-                Debug.Log(obj.b);
-                break;
-            case JSONObject.Type.NULL:
-                Debug.Log("NULL");
-                break;
-        }
-        */
+        mapHandler.SetEndTile((int)obj.list[0].n, (int)obj.list[1].n);
+
     }
 
     void ParseGeneralJSONData(JSONObject obj)

@@ -6,6 +6,7 @@ public class TileHandler : MonoBehaviour {
 
     [Tooltip("MUST be Up, Right, Down, Left")]
     [SerializeField] GameObject[] walls;
+    [SerializeField] GameObject floor;
 
     Vector2 positionInGrid;
 
@@ -13,8 +14,13 @@ public class TileHandler : MonoBehaviour {
 
     GameObject tileObject;
 
+    Color defaultMaterialColour;
+    private void Start()
+    {
+        defaultMaterialColour = floor.GetComponent<MeshRenderer>().material.color;
+    }
 
-    enum TileStatus {Empty, Blocked};   //Setting this as enum rather than bool in case we add more statuses later
+    enum TileStatus {Start, End, Occupied, Empty};   
     TileStatus tileStatus = TileStatus.Empty;
 
 
@@ -33,4 +39,37 @@ public class TileHandler : MonoBehaviour {
                 walls[i].SetActive(wallsStatus[i]);
         }
     }
+
+    /// <summary>
+    /// Status setters
+    /// </summary>
+
+    public void SetAsStart()
+    {
+        tileStatus = TileStatus.Start;
+        floor.GetComponent<MeshRenderer>().material.EnableKeyword("_EMISSION");
+
+        floor.GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", Color.red);
+    }
+
+    public void SetAsEnd()
+    {
+        tileStatus = TileStatus.End;
+        floor.GetComponent<MeshRenderer>().material.EnableKeyword("_EMISSION");
+
+        floor.GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", Color.green);
+    }
+
+    public void SetAsEmpty()
+    {
+        tileStatus = TileStatus.Empty;
+        floor.GetComponent<MeshRenderer>().material.color = defaultMaterialColour;
+    }
+
+    public void SetAsOccupied()
+    {
+        tileStatus = TileStatus.Occupied;
+        floor.GetComponent<MeshRenderer>().material.color = Color.green;
+    }
+
 }

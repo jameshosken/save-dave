@@ -40,9 +40,9 @@ io.on('connection', function(socket){
   socket.on('mapreq', function(){
     try{
       socket.emit('mapres', { mapData:  map.getMapToSend(), 
-                              mapSize:  map.getMapSize(), },
+                              mapSize:  map.getMapSize(), 
                               mapStart: map.getMapStart(),
-                              mapEnd:   map.getMapEnd());
+                              mapEnd:   map.getMapEnd() });
     }
     catch(err){
       console.log(err);
@@ -248,7 +248,18 @@ var Map = function(){
   }
 
   this.getMapSize = function(){
-    return {x: this.map.length, y:this.map[i].length};
+    return {x: this.map.length, y:this.map[0].length};
+  }
+
+  this.getMapStart = function(){
+    var safeRadius = 10;  //todo randomly generate start point
+    return {  x: Math.floor(this.map.length/2) ,
+              y: Math.floor(this.map[0].length/2)}
+  }
+
+  this.getMapEnd = function(){
+    return {  x:0, 
+              y:0}
   }
 
 
@@ -261,7 +272,7 @@ var Map = function(){
 }
 
 var map = new Map();
-map.CreateMap(20);
+map.CreateMap(10);
 map.PopulateMap();
 // map.printMap();
 console.log(map.getMapToSend());
