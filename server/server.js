@@ -1,7 +1,13 @@
 console.log("Server managed to start. At least.")
 
-var stringToTrack = "right";
+//Nasty global variables
+var stringToTrack = "#savedave";
+var mapSize = 5;
+var map;
+var player;
 
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
 
 /////////
 //SETUP//
@@ -32,16 +38,15 @@ var T = new Twit({
 var stream = T.stream('statuses/filter', { track: stringToTrack })
 console.log("twitter listener started successfully");
 
-/////////////
-//LISTENERS//
-/////////////
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
 
-//Listen for new socket connection
-io.on('connection', function(socket){
+///////////////////////
+// NETWORK FUNCTIONS //
+///////////////////////
 
-  //console.log("New user connected");
-  socket.on('mapreq', function(){
-    try{
+var SendMap = function(socket){
+  try{
       socket.emit('mapres', { mapData:  map.getMapToSend(), 
                               mapSize:  map.getMapSize(), 
                               mapStart: map.getMapStart(),
@@ -51,11 +56,27 @@ io.on('connection', function(socket){
       console.log(err);
       console.log("Likely no map yet");
     }
+}
+
+var SendPosition = function(socket){
+  console.log("Send New Position");
+  io.emit("newmove", player.GetPlayerPosition());
+}
+
+/////////////
+//LISTENERS//
+/////////////
+
+//Listen for new socket connection
+io.on('connection', function(socket){
+
+  //console.log("New user connected");
+  socket.on('mapreq', function(){
+    SendMap(socket);
   });
 
   socket.on('posreq', function(){
-    console.log("New position request");
-    io.emit("newmove", player.GetPlayerPosition());
+    SendPosition(socket);
   })
 
   socket.on('error', function(e){
@@ -84,6 +105,8 @@ stream.on('tweet', function (tweet) {
   if(player.UpdateLocation(direction)){
     console.log("Successful move! Sending to clients");
     io.emit("newmove", player.GetPlayerPosition());
+
+    player.path.push({name: tweet.name, text: tweet.text});
   }
   else{
     console.log("Oops, something went wrong")
@@ -92,38 +115,18 @@ stream.on('tweet', function (tweet) {
   console.log("--- END ---\n\n");
 })
 
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////
+//////////// GAME ENGINE //
+///////////////////////////
 
 
 ///////////////
-//GAME ENGINE//
+// FUNCTIONS //
 ///////////////
-
-/*
-	Game map is an array of arrays. Each inside array is a row.
-	To reference 3 down, 2 across, you would call gameMap[2][1];
-*/
-
-
-function Tile(x, y) {
-  //console.log("NEW TILE: " + x + ", " + y )
-  this.x = x;
-  this.y = y;
-  this.visited = false;
-  this.walls=[true,true,true,true]; //up,right,down,left
-
-  this.setVisited = function(status){
-    this.visited = status;
-  }
-
-  this.getVisited = function(){
-    return this.visited;
-  }
-
-  this.removeWall = function(index){
-    this.walls[index] = false;
-  }
-}
-
 
 var createEmptyMap = function(size){
   var map = [];
@@ -244,6 +247,40 @@ var findPath = function(tile, map, searchStack){
 }
 
 
+var OnWinCondition = function(){
+  mapSize++;
+  StartGame(mapSize)
+}
+
+var RefreshExistingClients = function(){
+  SendMap(io);
+  SendPosition(io);
+}
+
+/////////////
+// CLASSES //
+/////////////
+
+
+function Tile(x, y) {
+  //console.log("NEW TILE: " + x + ", " + y )
+  this.x = x;
+  this.y = y;
+  this.visited = false;
+  this.walls=[true,true,true,true]; //up,right,down,left
+
+  this.setVisited = function(status){
+    this.visited = status;
+  }
+
+  this.getVisited = function(){
+    return this.visited;
+  }
+
+  this.removeWall = function(index){
+    this.walls[index] = false;
+  }
+}
 
 var Map = function(){
   this.map;
@@ -303,6 +340,8 @@ var Player = function(map){
   this.location = map.getMapStart();        //{x:val, y:val}
   this.tile = map.map[this.location.x][this.location.y];
 
+  this.path = [];                           //Array of tweets that got us here
+
   this.directionArray =   [ {x:0,y:1},      //Up
                             {x:1,y:0},      //Right
                             {x:0,y:-1},     //Down
@@ -320,10 +359,17 @@ var Player = function(map){
       if(!this.tile.walls[directionIndex]){ //If there is no wall in the way
         //figure out which tile to move to:
         
+
           this.location.x += this.directionArray[directionIndex].x;
           this.location.y += this.directionArray[directionIndex].y;
+          if(this.location == this.map.getMapEnd()){
+            //WIN! Reset and try again
+            OnWinCondition();
+            return true;
+          }else{
           this.tile = this.map.map[this.location.x][this.location.y];
-          return true;
+            return true;
+          }
         }
     }catch(err){
       console.log("Problem updating location:");
@@ -334,11 +380,25 @@ var Player = function(map){
 }
 
 
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
 
-var map = new Map();
-map.CreateMap(10);
-map.PopulateMap();
-var player = new Player(map);
+///////////////
+// MAIN LOOP //
+///////////////
 
-var counter = 0;
+var StartGame = function(size){
+  console.log("Starting New Game. Map Size: " + mapSize);
+  map = new Map();
+  map.CreateMap(size);
+  map.PopulateMap();
+
+  player = new Player(map);
+
+  RefreshExistingClients();
+
+}
+
+StartGame(mapSize);
+
 

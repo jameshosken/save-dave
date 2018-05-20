@@ -8,6 +8,7 @@ public class TileHandler : MonoBehaviour {
     [SerializeField] GameObject[] walls;
     [SerializeField] GameObject floor;
     [SerializeField] GameObject goal;
+    [SerializeField] GameObject label;
 
     Vector2 positionInGrid;
 
@@ -19,6 +20,7 @@ public class TileHandler : MonoBehaviour {
     private void Start()
     {
         defaultMaterialColour = floor.GetComponent<MeshRenderer>().material.color;
+
     }
 
     enum TileStatus {Start, End, Occupied, Empty};   
@@ -30,8 +32,7 @@ public class TileHandler : MonoBehaviour {
     {
         positionInGrid = new Vector2(x, y);
         transform.position = new Vector3(positionInGrid.x, 0, positionInGrid.y);
-
-        GetComponentInChildren<TextMesh>().text = x.ToString() + "," +  y.ToString();
+        label.GetComponent<TextMesh>().text = x.ToString() + "," +  y.ToString();
     }
 
     public void SetWalls(bool[] wallData)
@@ -74,6 +75,12 @@ public class TileHandler : MonoBehaviour {
     {
         tileStatus = TileStatus.Occupied;
         floor.GetComponent<MeshRenderer>().material.color = Color.green;
+    }
+
+    public void ToggleLabel()
+    {
+
+        label.SetActive(!label.activeSelf);
     }
 
 }

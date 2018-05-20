@@ -39,4 +39,12 @@ public class MapHandler : MonoBehaviour {
         tiles[x, y].SetAsEnd();
     }
 
+    public void ToggleLabels()
+    {
+        foreach (TileHandler tile in tiles)
+        {
+            tile.ToggleLabel();
+        }
+    }
+
 }
