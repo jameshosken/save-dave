@@ -31,28 +31,24 @@ const socketIO = require('socket.io');
 const path = require('path');
 
 const PORT = process.env.PORT || 3000;
-const INDEX = path.join(__dirname, 'SaveDave/Build/index.html');
+const INDEX = path.join(__dirname, 'public/index.html');
 
 const server = express()
-  .use((req, res) => res.sendFile(INDEX) )
+  .use(express.static('public'))
   .listen(PORT, () => console.log(`Listening on ${ PORT }`));
 
 console.log("IP: " + process.env.IP)
 
 const io = socketIO(server);
-// console.log("socket.io requirements loaded successfully")
-// console.log("io listening on port: " + process.env.PORT)
-
-
-
 
 // Require all things twitter
-// var keys = require("./keys/keys.js");
+
 var Twit = require('twit')
 console.log("twitter requirements loaded successfully")
 
 // Set up new twit object
-//LOCAL
+// LOCAL
+// var keys = require("./keys/keys.js");
 // var T = new Twit({
 //   consumer_key:         keys.getAPIKey(),
 //   consumer_secret:      keys.getAPISecret(),
@@ -60,6 +56,7 @@ console.log("twitter requirements loaded successfully")
 //   access_token_secret:  keys.getAccessTokenSecret(),
 //   timeout_ms:           60*1000,  // optional HTTP request timeout to apply to all requests.
 // })
+
 //SERVER
 var T = new Twit({
   consumer_key:         process.env.MY_API_KEY,
