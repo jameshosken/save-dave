@@ -42,8 +42,6 @@ public class SocketHandler : MonoBehaviour
 
     [SerializeField] int maxTweetsInRoll;
 
-    ///private SocketIOComponent socket;
-    ///
     public SocketIOController socket;
 
     private MapHandler mapHandler;
@@ -52,6 +50,11 @@ public class SocketHandler : MonoBehaviour
 
     Queue<string> tweetTexts = new Queue<string>();
     Queue<string> tweetNames = new Queue<string>();
+
+    [SerializeField] Text connections;
+    [SerializeField] Text mazeSize;
+    [SerializeField] GameObject winScreen;
+    [SerializeField] Text namesText;
 
     public void Start() 
 	{
@@ -75,6 +78,8 @@ public class SocketHandler : MonoBehaviour
         socket.On("newmove", PositionDataFromServer);
         socket.On("newtweet", TweetDataFromServer);
 
+        socket.On("win", WinDataFromServer);
+
         socket.Connect();
     }
 
@@ -92,7 +97,12 @@ public class SocketHandler : MonoBehaviour
     public void SocketPing(SocketIOEvent e)
     {
         //Debug.Log("[SocketIO] Ping received");
+        JSONObject j = new JSONObject(e.data);
+        ParsePing(j);
+
     }
+
+    
 
     public void MapDataFromServer(SocketIOEvent e)
 	{
@@ -128,7 +138,17 @@ public class SocketHandler : MonoBehaviour
         ParseTweetData(j);
     }
 
-    
+    public void WinDataFromServer(SocketIOEvent e)
+    {
+        Debug.Log("[SocketIO] WIN received: " + e.name + " " + e.data);
+
+        if (e.data == null) { return; }
+
+        JSONObject j = new JSONObject(e.data);
+        ParseWinData(j);
+    }
+
+
 
     public void SocketError(SocketIOEvent e)
 	{
@@ -248,6 +268,31 @@ public class SocketHandler : MonoBehaviour
             tweetTexts.Enqueue(tweetText);
         }
         
+    }
+
+    private void ParsePing(JSONObject j)
+    {
+        int cnxns = (int) j.list[0].n;
+
+        connections.text = "People viewing Dave: " + cnxns;
+    }
+
+    private void ParseWinData(JSONObject j)
+    {
+        // Names array data will the list contained in the first list: list[0].list
+
+        namesText.text = "\nList of people who helped Dave:\n\n";
+        List<string> names = new List<string>();
+        for (int i = 0; i < j.list.Count; i++)
+        {
+            names.Add(j.list[0].list[i].str);
+            namesText.text += names[i] + "\n\n";
+        }
+
+        namesText.text += "\n\n";
+
+
+
     }
 
     void ParseGeneralJSONData(JSONObject obj)

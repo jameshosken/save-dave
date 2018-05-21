@@ -6,6 +6,8 @@ var mapSize = 5;
 var map;
 var player;
 
+var connections = 0;
+
 /////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -22,8 +24,6 @@ var player;
 
 var io = require('socket.io')({transports: "websockets"});
 io.attach(3000);
-
-
 
 
 // http.listen(3000, function () {
@@ -82,16 +82,24 @@ var SendTweet = function(socket, tweet){
 
 }
 
+var SendWin = function(socket){
+  var names = [];
+  player.path.forEach(function(tweet){
+    names.push(tweet.user.name);
+  })
+  socket.emit('win', {names: names})
+}
+
 /////////////
 //LISTENERS//
 /////////////
 
 //Listen for new socket connection
 io.on('connection', function(socket){
-
+  console.log("A new user has connected");
+  connections++;
   var pinger = setInterval(function(){ 
-    socket.emit('ping', {msg: 'ping'});
-    console.log("pinging...");
+    socket.emit('ping', {users: connections});
   }, 1000);
 
   //console.log("New user connected");
@@ -109,6 +117,7 @@ io.on('connection', function(socket){
   });
 
   socket.on('disconnect', function(){
+    connections--;
     clearInterval(pinger);              //Otherwise we'll have hundreds of pingers after a while
     console.log('user disconnected');
   });
@@ -119,6 +128,10 @@ io.on('connection', function(socket){
 // Upon receiving a new tweet, do somthing.
 stream.on('tweet', function (tweet) {
   //console.log("NEW TWEET");
+
+  if(connections < 1){  //no one is connected
+    return;
+  }
   
 
   var tweetData = tweet.text.toLowerCase();
@@ -288,7 +301,8 @@ var findPath = function(tile, map, searchStack){
 
 var OnWinCondition = function(){
   mapSize++;
-  StartGame(mapSize)
+  SendWin(io);
+  StartGame(mapSize);
 }
 
 var RefreshExistingClients = function(){
