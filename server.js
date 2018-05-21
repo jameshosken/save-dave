@@ -503,7 +503,7 @@ var Player = function(map){
     	  //console.log(this.tile);
 
           if(this.CheckWin){
-          	
+          	return true;
           }
           else
           {	
