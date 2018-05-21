@@ -13,22 +13,14 @@ var tweetDataQueue = [];
 
 var win = false;
 
+var tweetLock = false;
+
 /////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////
 
 /////////
 //SETUP//
 /////////
-
-// Require all things socket.io 
-// io = require('socket.io')({transports: "polling"});
-
-// io.attach(process.env.PORT || 3000);
-
-
-
-
-
 
 const express = require('express');
 const socketIO = require('socket.io');
@@ -51,7 +43,7 @@ var Twit = require('twit')
 console.log("twitter requirements loaded successfully")
 
 // Set up new twit object
-//LOCAL
+// LOCAL
 // var keys = require("./keys/keys.js");
 // var T = new Twit({
 //   consumer_key:         keys.getAPIKey(),
@@ -178,6 +170,13 @@ io.on('connection', function(socket){
 
 // Upon receiving a new tweet, do somthing.
 stream.on('tweet', function (tweet) {
+  
+  while(tweetLock){
+  	//wait
+  }
+
+  tweetLock = true;
+
   console.log("NEW TWEET");
 
   var tweetData = tweet.text.toLowerCase();
@@ -212,6 +211,8 @@ stream.on('tweet', function (tweet) {
   else{
     //console.log("There's a wall in the way, sorry");
   }
+  tweetLock = false;
+
 })
 
 /////////////////////////////////////////////////////////////////////////////////
