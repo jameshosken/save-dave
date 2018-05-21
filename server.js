@@ -469,7 +469,11 @@ var Player = function(map){
     //Checking for walls should also catch out of bounds errors
     //console.log(this.tile.walls);
 			console.log("MOVING");
+			console.log(directionIndex);
           	console.log(this.directionArray[directionIndex].x + ", " + this.directionArray[directionIndex].y)
+
+    		console.log("Walls:");
+    		console.log(this.tile.walls);
 
     try{
       if(!this.tile.walls[directionIndex]){ //If there is no wall in the way
@@ -489,6 +493,7 @@ var Player = function(map){
           }
         }else{
         	console.log("Invalid Move")
+
         }
     }catch(err){
       console.log("Problem updating location:");
@@ -516,7 +521,6 @@ var StartGame = function(size){
 }
 
 StartGame(mapSize);
-
 
 // Dead functions
 
