@@ -445,28 +445,29 @@ var Map = function(){
 
 var Player = function(map){
   //console.log(map);
-  this.location = map.getMapStart();        //{x:val, y:val}
-  this.tile = map.map[this.location.x][this.location.y];
+  myPlayer = this;
+  myPlayer.location = map.getMapStart();        //{x:val, y:val}
+  myPlayer.tile = map.map[myPlayer.location.x][myPlayer.location.y];
 
-  this.path = [];                           //Array of tweets that got us here
+  myPlayer.path = [];                           //Array of tweets that got us here
 
-  this.directionArray =   [ {x:0,y:1},      //Up
+  myPlayer.directionArray =   [ {x:0,y:1},      //Up
                             {x:1,y:0},      //Right
                             {x:0,y:-1},     //Down
                             {x:-1,y:0}      //Left
                           ]
 
-  this.GetPlayerPosition = function(direction){
+  myPlayer.GetPlayerPosition = function(direction){
     return this.location;
   }
 
-  this.SetPlayerPosition = function(pos){
-    this.location = pos;
-    this.CheckWin();
+  myPlayer.SetPlayerPosition = function(pos){
+    myPlayer.location = pos;
+    myPlayer.CheckWin();
   }
 
-  this.CheckWin = function(){
-  	if(this.location.x == map.getMapEnd().x && this.location.y == map.getMapEnd().y){
+  myPlayer.CheckWin = function(){
+  	if(myPlayer.location.x == map.getMapEnd().x && myPlayer.location.y == map.getMapEnd().y){
         //WIN! Reset and try again
         console.log("Checkwin == true")
         OnWinCondition();
@@ -476,31 +477,31 @@ var Player = function(map){
     }
   }
 
-  this.UpdateLocation = function(directionIndex){
+  myPlayer.UpdateLocation = function(directionIndex){
     //Checking for walls should also catch out of bounds errors
     //console.log(this.tile.walls);
 			console.log("MOVING");
 			//console.log(directionIndex);
-          	console.log(this.directionArray[directionIndex].x + ", " + this.directionArray[directionIndex].y)
+          	console.log(myPlayer.directionArray[directionIndex].x + ", " + myPlayer.directionArray[directionIndex].y)
 
     		console.log("Walls:");
-    		console.log(this.tile.walls);
+    		console.log(myPlayer.tile.walls);
 
     try{
-      if(!this.tile.walls[directionIndex]){ //If there is no wall in the way
+      if(!myPlayer.tile.walls[directionIndex]){ //If there is no wall in the way
         //figure out which tile to move to:
         console.log("Valid Move")
 
-          this.location.x += this.directionArray[directionIndex].x;
-          this.location.y += this.directionArray[directionIndex].y;
+          myPlayer.location.x += myPlayer.directionArray[directionIndex].x;
+          myPlayer.location.y += myPlayer.directionArray[directionIndex].y;
           
     	  //console.log(this.map.map[this.location.x][this.location.y]);
-          this.tile = map.map[this.location.x][this.location.y];
+          myPlayer.tile = map.map[myPlayer.location.x][myPlayer.location.y];
 
           //console.log("Tile:");
     	  //console.log(this.tile);
 
-          if(this.CheckWin){
+          if(myPlayer.CheckWin){
           	return true;
           }
           else
