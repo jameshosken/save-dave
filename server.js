@@ -176,10 +176,6 @@ stream.on('tweet', function (tweet) {
 
   //SendTweet(io, tweet);
 
-  if(connections < 1){  //no one is connected
-    return;
-  }
-  
 
   var tweetData = tweet.text.toLowerCase();
 
@@ -200,10 +196,10 @@ stream.on('tweet', function (tweet) {
   }else if(tweetData.includes("left")){
     direction = 3;
   }else{
-    //console.log("No movement");
+    console.log("No movement");
     return;
   }
-  //console.log("Attempting to move player: " + direction);
+  console.log("Attempting to move player: " + direction);
   if(player.UpdateLocation(direction)){
     //console.log("Successful move! Sending position to clients");
     SendPosition(io);
@@ -477,15 +473,19 @@ var Player = function(map){
     try{
       if(!this.tile.walls[directionIndex]){ //If there is no wall in the way
         //figure out which tile to move to:
+        console.log("Valid Move")
           this.location.x += this.directionArray[directionIndex].x;
           this.location.y += this.directionArray[directionIndex].y;
           if(this.CheckWin){
+          
           }
           else
           {
-          this.tile = this.map.map[this.location.x][this.location.y];
+          	this.tile = this.map.map[this.location.x][this.location.y];
             return true;
           }
+        }else{
+        	console.log("Invalid Move")
         }
     }catch(err){
       console.log("Problem updating location:");
