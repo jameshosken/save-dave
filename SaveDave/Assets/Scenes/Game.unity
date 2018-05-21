@@ -2189,6 +2189,11 @@ Prefab:
       propertyPath: settings.port
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114926281332617566, guid: de0d0fc5deca3884082c08068857db80,
+        type: 2}
+      propertyPath: settings.sslEnabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: de0d0fc5deca3884082c08068857db80, type: 2}
   m_IsPrefabParent: 0
