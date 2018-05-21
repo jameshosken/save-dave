@@ -31,7 +31,7 @@ const socketIO = require('socket.io');
 const path = require('path');
 
 const PORT = process.env.PORT || 3000;
-const INDEX = path.join(__dirname, 'SaveDave/Builds/index.html');
+const INDEX = path.join(__dirname, 'SaveDave/Build/index.html');
 
 const server = express()
   .use((req, res) => res.sendFile(INDEX) )
