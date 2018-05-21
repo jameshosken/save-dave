@@ -145,7 +145,7 @@ public class SocketHandler : MonoBehaviour
 
     public void WinDataFromServer(SocketIOEvent e)
     {
-        //Debug.Log("[SocketIO] WIN received: " + e.name + " " + e.data);
+        Debug.Log("[SocketIO] WIN received: " + e.name + " " + e.data);
 
         if (e.data == null) { return; }
 

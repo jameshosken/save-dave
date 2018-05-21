@@ -106,15 +106,17 @@ var SendTweet = function(socket, tweet){
 }
 
 var SendWin = function(socket){
+	console.log("SENDING WIN")
   var names = [];
   if(player.path.length == 0){
   	socket.emit('win', {names: ["No names on record :("]})
   	return;
   }
 
-  player.path.forEach(function(tweet){
-    names.push(tweet.user.name);
+  player.path.forEach(function(data){
+    names.push(data.name);
   })
+  console.log(names);
   socket.emit('win', {names: names})
 }
 
@@ -196,7 +198,6 @@ stream.on('tweet', function (tweet) {
     direction = 3;
   }else{
     console.log("No movement");
-
  	tweetLock = false;
     return;
   }
