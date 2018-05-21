@@ -22,6 +22,7 @@ public class MapHandler : MonoBehaviour {
                 GameObject.Destroy(tile.gameObject);
             }
         }
+
         tiles = new TileHandler[x, y];
     }
 

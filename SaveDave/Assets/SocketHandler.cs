@@ -76,7 +76,9 @@ public class SocketHandler : MonoBehaviour
         //Custom socket messages
         socket.On("mapres", MapDataFromServer);
         socket.On("newmove", PositionDataFromServer);
-        socket.On("newtweet", TweetDataFromServer);
+        //socket.On("newtweet", TweetDataFromServer);
+
+        socket.On("tweets", TweetDataFromServer);
 
         socket.On("win", WinDataFromServer);
 
@@ -247,7 +249,21 @@ public class SocketHandler : MonoBehaviour
 
     private void ParseTweetData(JSONObject j)
     {
+
+
+        tweetRoll.text = "";
+
         Debug.Log("Parsing tweet");
+        Debug.Log(j);
+        JSONObject arr = j.list[0];
+        Debug.Log(arr);
+
+        for(int i = 0; i < arr.Count; i++)
+        {
+            tweetRoll.text += "Tweet: " + arr.list[i].list[1].str + "\nBy " + arr.list[i].list[0].str + "\n\n";
+        }
+
+        /*
         tweetRoll.text = "";
         if(tweetNames.Count > 5)
         {
@@ -255,6 +271,7 @@ public class SocketHandler : MonoBehaviour
             tweetTexts.Dequeue();
             
         }
+
         Debug.Log(j);
         tweetNames.Enqueue( j.list[0].str );
         tweetTexts.Enqueue( j.list[1].str );
@@ -271,7 +288,8 @@ public class SocketHandler : MonoBehaviour
             tweetNames.Enqueue(tweetName);
             tweetTexts.Enqueue(tweetText);
         }
-        
+        */
+
     }
 
     private void ParsePing(JSONObject j)

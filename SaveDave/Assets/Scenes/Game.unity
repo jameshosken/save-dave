@@ -938,6 +938,11 @@ Prefab:
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 108282931518915808, guid: c475dabac22bdbd46a2471655a9a80bb,
+        type: 2}
+      propertyPath: m_Shadows.m_Type
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c475dabac22bdbd46a2471655a9a80bb, type: 2}
   m_IsPrefabParent: 0
@@ -2182,12 +2187,12 @@ Prefab:
     - target: {fileID: 114926281332617566, guid: de0d0fc5deca3884082c08068857db80,
         type: 2}
       propertyPath: settings.url
-      value: save-dave.herokuapp.com
+      value: localhost
       objectReference: {fileID: 0}
     - target: {fileID: 114926281332617566, guid: de0d0fc5deca3884082c08068857db80,
         type: 2}
       propertyPath: settings.port
-      value: 0
+      value: 3000
       objectReference: {fileID: 0}
     - target: {fileID: 114926281332617566, guid: de0d0fc5deca3884082c08068857db80,
         type: 2}

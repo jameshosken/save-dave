@@ -9,6 +9,8 @@ var player;
 
 var connections = 0;
 
+var tweetDataQueue = [];
+
 /////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -48,23 +50,23 @@ console.log("twitter requirements loaded successfully")
 
 // Set up new twit object
 //LOCAL
-// var keys = require("./keys/keys.js");
-// var T = new Twit({
-//   consumer_key:         keys.getAPIKey(),
-//   consumer_secret:      keys.getAPISecret(),
-//   access_token:         keys.getAccessToken(),
-//   access_token_secret:  keys.getAccessTokenSecret(),
-//   timeout_ms:           60*1000,  // optional HTTP request timeout to apply to all requests.
-// })
-
-//SERVER
+var keys = require("./keys/keys.js");
 var T = new Twit({
-  consumer_key:         process.env.MY_API_KEY,
-  consumer_secret:      process.env.MY_API_SECRET,
-  access_token:         process.env.ACCESS_TOKEN,
-  access_token_secret:  process.env.ACCESS_SECRET,
+  consumer_key:         keys.getAPIKey(),
+  consumer_secret:      keys.getAPISecret(),
+  access_token:         keys.getAccessToken(),
+  access_token_secret:  keys.getAccessTokenSecret(),
   timeout_ms:           60*1000,  // optional HTTP request timeout to apply to all requests.
 })
+
+//SERVER
+// var T = new Twit({
+//   consumer_key:         process.env.MY_API_KEY,
+//   consumer_secret:      process.env.MY_API_SECRET,
+//   access_token:         process.env.ACCESS_TOKEN,
+//   access_token_secret:  process.env.ACCESS_SECRET,
+//   timeout_ms:           60*1000,  // optional HTTP request timeout to apply to all requests.
+// })
 
 // Set up a listener for updates on the twitter stream
 var stream = T.stream('statuses/filter', { track: stringToTrack })
@@ -96,8 +98,15 @@ var SendPosition = function(socket){
 }
 
 var SendTweet = function(socket, tweet){
-  socket.emit('newtweet', { name: tweet.user.name,
-                            text: tweet.text
+
+	var dataToSend = []
+
+	var tweets = tweetDataQueue.forEach(function(tweet){
+		dataToSend.push({	name: tweet.user.name,
+							text: tweet.text})
+	});
+	
+  	socket.emit('tweets', { data: dataToSend
                           });
 
 }
@@ -123,10 +132,12 @@ var SendWin = function(socket){
 io.on('connection', function(socket){
   console.log("A new user has connected");
   connections++;
+  
   var pinger = setInterval(function(){ 
     socket.emit('ping', {users: connections});
     SendPosition(socket);
-  }, 5000);
+    SendTweet(socket);
+  }, 1000);
 
   //console.log("New user connected");
   socket.on('mapreq', function(){
@@ -160,7 +171,7 @@ io.on('connection', function(socket){
 stream.on('tweet', function (tweet) {
   console.log("NEW TWEET");
 
-  SendTweet(io,tweet);
+  //SendTweet(io, tweet);
 
   if(connections < 1){  //no one is connected
     return;
@@ -168,6 +179,14 @@ stream.on('tweet', function (tweet) {
   
 
   var tweetData = tweet.text.toLowerCase();
+
+
+  if(tweetDataQueue.length > 5){
+  	var first = tweetDataQueue.shift();
+  }
+  tweetDataQueue.push(tweet)
+
+
   var direction;
   if(tweetData.includes("up")){
     direction = 0;
@@ -458,7 +477,9 @@ var Player = function(map){
           this.location.x += this.directionArray[directionIndex].x;
           this.location.y += this.directionArray[directionIndex].y;
           if(this.CheckWin){
-          }else{
+          }
+          else
+          {
           this.tile = this.map.map[this.location.x][this.location.y];
             return true;
           }
