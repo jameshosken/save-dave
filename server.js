@@ -3,7 +3,7 @@ console.log("Server managed to start. At least.")
 
 //Nasty global variables
 var stringToTrack = "#savedave";
-var mapSize = 5;
+var mapSize = 3;
 var map;
 var player;
 
@@ -208,7 +208,7 @@ stream.on('tweet', function (tweet) {
   if(player.UpdateLocation(direction)){
   	console.log("Adding to path")
   	console.log({name: tweet.user.name, text: tweet.text})
-  	
+
     player.path.push({name: tweet.user.name, text: tweet.text});
     console.log("TWEET: " + tweet.text);
     console.log("BY: " + tweet.user.name);
@@ -360,9 +360,9 @@ var findPath = function(tile, map, searchStack){
 
 var OnWinCondition = function(){
   console.log("GAME WON! WOO")
-  mapSize++;
-  //SendWin(io);
+  
   win = true;
+  mapSize++;
   StartGame(mapSize);
 }
 
@@ -445,7 +445,6 @@ var Map = function(){
 
 var Player = function(map){
   //console.log(map);
-  this.map = map;
   this.location = map.getMapStart();        //{x:val, y:val}
   this.tile = map.map[this.location.x][this.location.y];
 
@@ -467,7 +466,7 @@ var Player = function(map){
   }
 
   this.CheckWin = function(){
-  	if(this.location.x == this.map.getMapEnd().x && this.location.y == this.map.getMapEnd().y){
+  	if(this.location.x == map.getMapEnd().x && this.location.y == map.getMapEnd().y){
         //WIN! Reset and try again
         console.log("Checkwin == true")
         OnWinCondition();
@@ -495,9 +494,8 @@ var Player = function(map){
           this.location.x += this.directionArray[directionIndex].x;
           this.location.y += this.directionArray[directionIndex].y;
           
-          console.log("nextTilele:");
     	  //console.log(this.map.map[this.location.x][this.location.y]);
-          this.tile = this.map.map[this.location.x][this.location.y];
+          this.tile = map.map[this.location.x][this.location.y];
 
           //console.log("Tile:");
     	  //console.log(this.tile);
