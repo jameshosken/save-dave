@@ -1,3 +1,4 @@
+
 console.log("Server managed to start. At least.")
 
 //Nasty global variables
@@ -16,18 +17,33 @@ var connections = 0;
 /////////
 
 // Require all things socket.io 
-io = require('socket.io')({transports: "polling"});
+// io = require('socket.io')({transports: "polling"});
 
-// Stuff to let socketio work on heroku:
-// io.configure(function () {  
-//   io.set("transports", ["xhr-polling"]); 
-//   io.set("polling duration", 10); 
-// });
+// io.attach(process.env.PORT || 3000);
 
-io.attach(process.env.PORT || 3000);
 
-console.log("socket.io requirements loaded successfully")
-console.log("io listening on port: " + process.env.PORT)
+
+
+
+
+const express = require('express');
+const socketIO = require('socket.io');
+const path = require('path');
+
+const PORT = process.env.PORT || 3000;
+const INDEX = path.join(__dirname, 'SaveDave/Builds/index.html');
+
+const server = express()
+  .use((req, res) => res.sendFile(INDEX) )
+  .listen(PORT, () => console.log(`Listening on ${ PORT }`));
+
+
+const io = socketIO(server);
+// console.log("socket.io requirements loaded successfully")
+// console.log("io listening on port: " + process.env.PORT)
+
+
+
 
 // Require all things twitter
 var keys = require("./keys/keys.js");
