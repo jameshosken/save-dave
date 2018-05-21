@@ -94,7 +94,7 @@ public class SocketHandler : MonoBehaviour
 	{
         //Ensure this function only runs once per session
         if (isOpen) { return; }
-		Debug.Log("[SocketIO] Open received: " + e.name);
+		//Debug.Log("[SocketIO] Open received: " + e.name);
         isOpen = true;
         socket.Emit("mapreq");
 	}
@@ -112,7 +112,7 @@ public class SocketHandler : MonoBehaviour
     public void MapDataFromServer(SocketIOEvent e)
 	{
 
-		Debug.Log("[SocketIO] DATA received: " + e.name + " " + e.data);
+		//Debug.Log("[SocketIO] DATA received: " + e.name + " " + e.data);
 
 		if (e.data == null) { return; }
 
@@ -124,7 +124,7 @@ public class SocketHandler : MonoBehaviour
 
     public void PositionDataFromServer(SocketIOEvent e)
     {
-        Debug.Log("[SocketIO] DATA received: " + e.name + " " + e.data);
+        //Debug.Log("[SocketIO] DATA received: " + e.name + " " + e.data);
 
         if (e.data == null) { return; }
 
@@ -135,7 +135,7 @@ public class SocketHandler : MonoBehaviour
 
     public void TweetDataFromServer(SocketIOEvent e)
     {
-        Debug.Log("[SocketIO] DATA received: " + e.name + " " + e.data);
+        //Debug.Log("[SocketIO] DATA received: " + e.name + " " + e.data);
 
         if (e.data == null) { return; }
 
@@ -145,7 +145,7 @@ public class SocketHandler : MonoBehaviour
 
     public void WinDataFromServer(SocketIOEvent e)
     {
-        Debug.Log("[SocketIO] WIN received: " + e.name + " " + e.data);
+        //Debug.Log("[SocketIO] WIN received: " + e.name + " " + e.data);
 
         if (e.data == null) { return; }
 
@@ -157,12 +157,12 @@ public class SocketHandler : MonoBehaviour
 
     public void SocketError(SocketIOEvent e)
 	{
-		Debug.Log("[SocketIO] Error received: " + e.name + " " + e.data);
+		//Debug.Log("[SocketIO] Error received: " + e.name + " " + e.data);
 	}
 	
 	public void SocketClose(SocketIOEvent e)
 	{	
-		Debug.Log("[SocketIO] Close received: " + e.name + " " + e.data);
+		//Debug.Log("[SocketIO] Close received: " + e.name + " " + e.data);
         isOpen = false;
 	}
 
@@ -173,15 +173,15 @@ public class SocketHandler : MonoBehaviour
     void ParseMapData(JSONObject container)
     {
         //Handle Map Size
-        print("Handle Map Size");
+        //print("Handle Map Size");
         JSONObject obj = container.list[1];
-        Debug.Log(obj);
+        //Debug.Log(obj);
 
         mapHandler.SetMapSize((int)obj.list[0].n, (int)obj.list[1].n);
         mazeSize.text = "Maze size: " + (int)obj.list[0].n + "x" + (int)obj.list[1].n;
 
         //Handle Map Data
-        print("Handle Map Data");
+        //print("Handle Map Data");
         obj = container.list[0];
         
         for(int i = 0; i < obj.list.Count; i++)
@@ -214,22 +214,22 @@ public class SocketHandler : MonoBehaviour
                 }
                 
             }
-            Debug.Log("Adding tile: " + inX + ", " + inY);
+            //Debug.Log("Adding tile: " + inX + ", " + inY);
             mapHandler.AddNewTile(inX, inY, inWalls);
 
         }
 
         //Handle Start tile
-        print("Handle Start Tile");
+        //print("Handle Start Tile");
         obj = container.list[2];
-        Debug.Log(obj);
+        //Debug.Log(obj);
 
         mapHandler.SetStartTile((int)obj.list[0].n, (int)obj.list[1].n);
 
         //Handle End Tile
-        print("Handle End Tile");
+        //print("Handle End Tile");
         obj = container.list[3];
-        Debug.Log(obj);
+        //Debug.Log(obj);
 
         mapHandler.SetEndTile((int)obj.list[0].n, (int)obj.list[1].n);
 
@@ -239,8 +239,8 @@ public class SocketHandler : MonoBehaviour
     {
 
         //Handle Position Data
-        print("Handle Position Data");
-        Debug.Log(obj);
+        //print("Handle Position Data");
+        //Debug.Log(obj);
 
         playerMovement.SetPlayerPosition((int)obj.list[0].n, (int)obj.list[1].n);
 
@@ -253,42 +253,16 @@ public class SocketHandler : MonoBehaviour
 
         tweetRoll.text = "";
 
-        Debug.Log("Parsing tweet");
-        Debug.Log(j);
+        //Debug.Log("Parsing tweet");
+        //Debug.Log(j);
         JSONObject arr = j.list[0];
-        Debug.Log(arr);
+        //Debug.Log(arr);
 
         for(int i = 0; i < arr.Count; i++)
         {
             tweetRoll.text += "Tweet: " + arr.list[i].list[1].str + "\nBy " + arr.list[i].list[0].str + "\n\n";
         }
-
-        /*
-        tweetRoll.text = "";
-        if(tweetNames.Count > 5)
-        {
-            tweetNames.Dequeue();
-            tweetTexts.Dequeue();
-            
-        }
-
-        Debug.Log(j);
-        tweetNames.Enqueue( j.list[0].str );
-        tweetTexts.Enqueue( j.list[1].str );
         
-        
-        for (int i = 0; i < tweetNames.Count; i++)  //Super stupid way of cycling through texts but the only way I can think of right now
-        {
-            string tweetName = tweetNames.Dequeue();
-            string tweetText = tweetTexts.Dequeue();
-            Debug.Log("ADDING TO ROLL");
-            Debug.Log("Tweet: " + tweetText + "\nBy: " + tweetName + "\n\n");
-            tweetRoll.text += "Tweet: " + tweetText + "\nBy: " + tweetName + "\n\n";
-
-            tweetNames.Enqueue(tweetName);
-            tweetTexts.Enqueue(tweetText);
-        }
-        */
 
     }
 
@@ -302,7 +276,7 @@ public class SocketHandler : MonoBehaviour
     private void ParseWinData(JSONObject j)
     {
         // Names array data will the list contained in the first list: list[0].list
-        Debug.Log(j);
+        //Debug.Log(j);
         namesText.text = "\nList of people who helped Dave:\n\n";
         List<string> names = new List<string>();
         for (int i = 0; i < j.list.Count; i++)
