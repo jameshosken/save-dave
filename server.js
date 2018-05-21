@@ -467,6 +467,13 @@ var Player = function(map){
   }
 
   myPlayer.CheckWin = function(){
+  	console.log("WIN CONDITIONS CHECKING")
+  	console.log(myPlayer.location.x)
+  	console.log(map.getMapEnd().x)
+  	console.log(myPlayer.location.y)
+  	console.log(map.getMapEnd().y)
+
+
   	if(myPlayer.location.x == map.getMapEnd().x && myPlayer.location.y == map.getMapEnd().y){
         //WIN! Reset and try again
         console.log("Checkwin == true")
