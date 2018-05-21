@@ -247,7 +247,7 @@ var countUnvisitedCells = function(map){
 }
 
 var IsOutOfBounds = function(tile, map, xoff, yoff){
-  return (tile.x + xoff < 0 || tile.x + xoff >= map.length || tile.y + yoff < 0 || tile.y + yoff >= map[0].length);
+  return ((tile.x + xoff) < 0 || (tile.x + xoff) >= map.length || (tile.y + yoff) < 0 || (tile.y + yoff) >= map[0].length);
 }
 
 var getUnvisitedNeighbours = function(tile, map){
@@ -262,6 +262,7 @@ var getUnvisitedNeighbours = function(tile, map){
           try{  //Neighbour may or may not exist
             //CheckBounds
             if(IsOutOfBounds(tile, map, xoff,yoff)){
+            	//console.log("OUT OF BOUNDS")
               continue;
             }else{
               var neighbourTile = map[tile.x + xoff][tile.y + yoff];
