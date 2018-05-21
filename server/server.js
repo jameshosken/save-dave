@@ -14,9 +14,21 @@ var player;
 /////////
 
 // Require all things socket.io
-var io = require('socket.io')({transports: ['websocket'],});
+//var io = require('socket.io')({transports: ['websocket'],});
+
+// var app = require('express')();
+// var http = require('http').Server(app);
+// var io = require('socket.io')(http);
+
+var io = require('socket.io')({transports: "websockets"});
 io.attach(3000);
-console.log("Listening on port 4567");
+
+
+
+
+// http.listen(3000, function () {
+//   console.log('listening on *:8080');
+//});
 
 console.log("socket.io requirements loaded successfully")
 
@@ -77,6 +89,11 @@ var SendTweet = function(socket, tweet){
 //Listen for new socket connection
 io.on('connection', function(socket){
 
+  var pinger = setInterval(function(){ 
+    socket.emit('ping', {msg: 'ping'});
+    console.log("pinging...");
+  }, 1000);
+
   //console.log("New user connected");
   socket.on('mapreq', function(){
     SendMap(socket);
@@ -92,6 +109,7 @@ io.on('connection', function(socket){
   });
 
   socket.on('disconnect', function(){
+    clearInterval(pinger);              //Otherwise we'll have hundreds of pingers after a while
     console.log('user disconnected');
   });
 
@@ -100,7 +118,7 @@ io.on('connection', function(socket){
 
 // Upon receiving a new tweet, do somthing.
 stream.on('tweet', function (tweet) {
-  console.log("NEW TWEET");
+  //console.log("NEW TWEET");
   
 
   var tweetData = tweet.text.toLowerCase();
@@ -114,7 +132,7 @@ stream.on('tweet', function (tweet) {
   }else if(tweetData.includes("left")){
     direction = 3;
   }else{
-    console.log("No movement");
+    //console.log("No movement");
     return;
   }
 

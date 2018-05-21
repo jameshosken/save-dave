@@ -1735,8 +1735,8 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1727790174}
+  - component: {fileID: 1727790176}
   - component: {fileID: 1727790173}
-  - component: {fileID: 1727790175}
   m_Layer: 0
   m_Name: SocketHandler
   m_TagString: Untagged
@@ -1757,6 +1757,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tweetRoll: {fileID: 1372728967}
   maxTweetsInRoll: 5
+  socket: {fileID: 1727790176}
 --- !u!4 &1727790174
 Transform:
   m_ObjectHideFlags: 0
@@ -1770,7 +1771,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1727790175
+--- !u!114 &1727790176
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -1778,15 +1779,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 1727790172}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 961346d7e16a445ff93777573e78efd6, type: 3}
+  m_Script: {fileID: 11500000, guid: d7e6021b6709d4841b7d36056e5d2743, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  url: ws://127.0.0.1:3000/socket.io/?EIO=4&transport=websocket
-  autoConnect: 1
-  reconnectDelay: 5
-  ackExpirationTime: 1800
-  pingInterval: 25
-  pingTimeout: 60
+  settings:
+    url: localhost
+    port: 3000
+    sslEnabled: 0
+    reconnectTime: 5
+    timeToDropAck: 1800
+    pingTimeout: 25
+    pingInterval: 60
 --- !u!1 &1807426394
 GameObject:
   m_ObjectHideFlags: 0
@@ -1957,7 +1960,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.3137255}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:

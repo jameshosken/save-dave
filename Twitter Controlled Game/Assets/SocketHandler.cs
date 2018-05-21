@@ -28,10 +28,12 @@
 
 using System.Collections;
 using UnityEngine;
-using SocketIO;
+using UnitySocketIO;
+using UnitySocketIO.Events;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using System;
+
 
 public class SocketHandler : MonoBehaviour
 {
@@ -40,7 +42,10 @@ public class SocketHandler : MonoBehaviour
 
     [SerializeField] int maxTweetsInRoll;
 
-	private SocketIOComponent socket;
+    ///private SocketIOComponent socket;
+    ///
+    public SocketIOController socket;
+
     private MapHandler mapHandler;
     private PlayerMovement playerMovement;
     bool isOpen = false;
@@ -50,14 +55,19 @@ public class SocketHandler : MonoBehaviour
 
     public void Start() 
 	{
-		socket = gameObject.GetComponent<SocketIOComponent>();
+		socket = gameObject.GetComponent<SocketIOController>();
+        Debug.Log(socket);
         mapHandler = GameObject.Find("Map").GetComponent<MapHandler>();
         playerMovement = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>();
-        
+
 
         //Default socket messages
+
+        socket.On("connect", SocketOpen);
 		socket.On("open", SocketOpen);
-		socket.On("error", SocketError);
+        socket.On("ping", SocketPing);
+        
+        socket.On("error", SocketError);
 		socket.On("close", SocketClose);
 
         //Custom socket messages
@@ -65,6 +75,7 @@ public class SocketHandler : MonoBehaviour
         socket.On("newmove", PositionDataFromServer);
         socket.On("newtweet", TweetDataFromServer);
 
+        socket.Connect();
     }
 
 
@@ -77,14 +88,20 @@ public class SocketHandler : MonoBehaviour
         isOpen = true;
         socket.Emit("mapreq");
 	}
-	
-	public void MapDataFromServer(SocketIOEvent e)
+
+    public void SocketPing(SocketIOEvent e)
+    {
+        //Debug.Log("[SocketIO] Ping received");
+    }
+
+    public void MapDataFromServer(SocketIOEvent e)
 	{
+
 		Debug.Log("[SocketIO] DATA received: " + e.name + " " + e.data);
 
 		if (e.data == null) { return; }
 
-        JSONObject j = e.data;
+        JSONObject j = new JSONObject(e.data);
         ParseMapData(j);
 
         socket.Emit("posreq");
@@ -96,7 +113,7 @@ public class SocketHandler : MonoBehaviour
 
         if (e.data == null) { return; }
 
-        JSONObject j = e.data;
+        JSONObject j = new JSONObject( e.data);
         ParsePositionData(j);
 
     }
@@ -107,7 +124,7 @@ public class SocketHandler : MonoBehaviour
 
         if (e.data == null) { return; }
 
-        JSONObject j = e.data;
+        JSONObject j = new JSONObject(e.data);
         ParseTweetData(j);
     }
 
