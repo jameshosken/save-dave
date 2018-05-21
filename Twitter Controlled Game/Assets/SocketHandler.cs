@@ -173,6 +173,7 @@ public class SocketHandler : MonoBehaviour
         Debug.Log(obj);
 
         mapHandler.SetMapSize((int)obj.list[0].n, (int)obj.list[1].n);
+        mazeSize.text = "Maze size: " + (int)obj.list[0].n + "x" + (int)obj.list[1].n;
 
         //Handle Map Data
         print("Handle Map Data");

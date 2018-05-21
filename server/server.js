@@ -71,7 +71,7 @@ var SendMap = function(socket){
 }
 
 var SendPosition = function(socket){
-  console.log("Send New Position");
+  //console.log("Send New Position");
   socket.emit("newmove", player.GetPlayerPosition());
 }
 
@@ -112,7 +112,7 @@ io.on('connection', function(socket){
   })
 
   socket.on('error', function(e){
-    console.log('error');
+    console.log('Socketio error');
     console.log(e);
   });
 
@@ -149,22 +149,24 @@ stream.on('tweet', function (tweet) {
     return;
   }
 
-  console.log("Attempting to move player: " + direction);
+  //console.log("Attempting to move player: " + direction);
   if(player.UpdateLocation(direction)){
-    console.log("Successful move! Sending position to clients");
+    //console.log("Successful move! Sending position to clients");
     SendPosition(io);
     SendTweet(io,tweet);
 
-    console.log("---")
+    
+    
+    player.path.push({name: tweet.name, text: tweet.text});
+
     console.log("TWEET: " + tweet.text);
     console.log("BY: " + tweet.user.name);
-    player.path.push({name: tweet.name, text: tweet.text});
+    console.log("---");
+
   }
   else{
-    console.log("There's a wall in the way, sorry");
+    //console.log("There's a wall in the way, sorry");
   }
-
-  console.log("///////////////")
 })
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -388,7 +390,7 @@ var Map = function(){
 
 
 var Player = function(map){
-  console.log(map);
+  //console.log(map);
   this.map = map;
   this.location = map.getMapStart();        //{x:val, y:val}
   this.tile = map.map[this.location.x][this.location.y];
@@ -407,7 +409,7 @@ var Player = function(map){
 
   this.UpdateLocation = function(directionIndex){
     //Checking for walls should also catch out of bounds errors
-    console.log(this.tile.walls);
+    //console.log(this.tile.walls);
     try{
       if(!this.tile.walls[directionIndex]){ //If there is no wall in the way
         //figure out which tile to move to:
