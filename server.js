@@ -206,6 +206,9 @@ stream.on('tweet', function (tweet) {
   }
   console.log("Attempting to move player: " + direction);
   if(player.UpdateLocation(direction)){
+  	console.log("Adding to path")
+  	console.log({name: tweet.user.name, text: tweet.text})
+  	
     player.path.push({name: tweet.user.name, text: tweet.text});
     console.log("TWEET: " + tweet.text);
     console.log("BY: " + tweet.user.name);
@@ -216,7 +219,7 @@ stream.on('tweet', function (tweet) {
 
   }
   else{
-    //console.log("There's a wall in the way, sorry");
+    console.log("Unable to move, sorry");
   }
   tweetLock = false;
 
@@ -504,8 +507,6 @@ var Player = function(map){
           }
           else
           {	
-          	
-          	
             return true;
           }
         }else{
