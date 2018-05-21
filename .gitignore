@@ -35,5 +35,7 @@ sysinfo.txt
 *.unitypackage
 
 # Keys and node stuff
+[Kk]eys/
 */[Kk]eys/
+node_modules/
 */node_modules/
