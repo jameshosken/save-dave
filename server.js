@@ -47,11 +47,20 @@ const io = socketIO(server);
 
 
 // Require all things twitter
-//var keys = require("./keys/keys.js");
+// var keys = require("./keys/keys.js");
 var Twit = require('twit')
 console.log("twitter requirements loaded successfully")
 
 // Set up new twit object
+//LOCAL
+// var T = new Twit({
+//   consumer_key:         keys.getAPIKey(),
+//   consumer_secret:      keys.getAPISecret(),
+//   access_token:         keys.getAccessToken(),
+//   access_token_secret:  keys.getAccessTokenSecret(),
+//   timeout_ms:           60*1000,  // optional HTTP request timeout to apply to all requests.
+// })
+//SERVER
 var T = new Twit({
   consumer_key:         process.env.MY_API_KEY,
   consumer_secret:      process.env.MY_API_SECRET,
@@ -98,6 +107,11 @@ var SendTweet = function(socket, tweet){
 
 var SendWin = function(socket){
   var names = [];
+  if(player.path.length == 0){
+  	socket.emit('win', {names: ["No names on record :("]})
+  	return;
+  }
+
   player.path.forEach(function(tweet){
     names.push(tweet.user.name);
   })
@@ -135,6 +149,11 @@ io.on('connection', function(socket){
     clearInterval(pinger);              //Otherwise we'll have hundreds of pingers after a while
     console.log('user disconnected');
   });
+
+  socket.on('cheatcode', function(){
+  	console.log("CHEAT CODE DETECTED")
+  	player.SetPlayerPosition({x:0, y:0});
+  })
 
 })
 
@@ -390,8 +409,7 @@ var Map = function(){
   }
 
   this.getMapEnd = function(){
-    return {  x:0, 
-              y:0}
+    return {x:0,y:0}
   }
 
 
@@ -422,6 +440,21 @@ var Player = function(map){
     return this.location;
   }
 
+  this.SetPlayerPosition = function(pos){
+    this.location = pos;
+    this.CheckWin();
+  }
+
+  this.CheckWin = function(){
+  	if(this.location.x == this.map.getMapEnd().x && this.location.y == this.map.getMapEnd().y){
+        //WIN! Reset and try again
+        OnWinCondition();
+        return true;
+    }else{
+    	return false;
+    }
+  }
+
   this.UpdateLocation = function(directionIndex){
     //Checking for walls should also catch out of bounds errors
     //console.log(this.tile.walls);
@@ -432,11 +465,7 @@ var Player = function(map){
 
           this.location.x += this.directionArray[directionIndex].x;
           this.location.y += this.directionArray[directionIndex].y;
-          if(this.location == this.map.getMapEnd()){
-            //WIN! Reset and try again
-
-            OnWinCondition();
-            return true;
+          if(this.CheckWin){
           }else{
           this.tile = this.map.map[this.location.x][this.location.y];
             return true;

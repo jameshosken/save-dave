@@ -84,7 +84,10 @@ public class SocketHandler : MonoBehaviour
     }
 
 
-
+    public void SendCheatCode()
+    {
+        socket.Emit("cheatcode");
+    }
 	public void SocketOpen(SocketIOEvent e)
 	{
         //Ensure this function only runs once per session
@@ -281,7 +284,7 @@ public class SocketHandler : MonoBehaviour
     private void ParseWinData(JSONObject j)
     {
         // Names array data will the list contained in the first list: list[0].list
-
+        Debug.Log(j);
         namesText.text = "\nList of people who helped Dave:\n\n";
         List<string> names = new List<string>();
         for (int i = 0; i < j.list.Count; i++)
@@ -291,6 +294,7 @@ public class SocketHandler : MonoBehaviour
         }
 
         namesText.text += "\n\n";
+        winScreen.SetActive(true);
 
 
 
