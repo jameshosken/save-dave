@@ -47,24 +47,24 @@ var Twit = require('twit')
 console.log("twitter requirements loaded successfully")
 
 // Set up new twit object
-// LOCAL
-// var keys = require("./keys/keys.js");
-// var T = new Twit({
-//   consumer_key:         keys.getAPIKey(),
-//   consumer_secret:      keys.getAPISecret(),
-//   access_token:         keys.getAccessToken(),
-//   access_token_secret:  keys.getAccessTokenSecret(),
-//   timeout_ms:           60*1000,  // optional HTTP request timeout to apply to all requests.
-// })
-
-//SERVER
+//LOCAL
+var keys = require("./keys/keys.js");
 var T = new Twit({
-  consumer_key:         process.env.MY_API_KEY,
-  consumer_secret:      process.env.MY_API_SECRET,
-  access_token:         process.env.ACCESS_TOKEN,
-  access_token_secret:  process.env.ACCESS_SECRET,
+  consumer_key:         keys.getAPIKey(),
+  consumer_secret:      keys.getAPISecret(),
+  access_token:         keys.getAccessToken(),
+  access_token_secret:  keys.getAccessTokenSecret(),
   timeout_ms:           60*1000,  // optional HTTP request timeout to apply to all requests.
 })
+
+//SERVER
+// var T = new Twit({
+//   consumer_key:         process.env.MY_API_KEY,
+//   consumer_secret:      process.env.MY_API_SECRET,
+//   access_token:         process.env.ACCESS_TOKEN,
+//   access_token_secret:  process.env.ACCESS_SECRET,
+//   timeout_ms:           60*1000,  // optional HTTP request timeout to apply to all requests.
+// })
 
 // Set up a listener for updates on the twitter stream
 var stream = T.stream('statuses/filter', { track: stringToTrack })
@@ -91,7 +91,7 @@ var SendMap = function(socket){
 }
 
 var SendPosition = function(socket){
-  //console.log("Send New Position");
+	console.log("SENDING POSITION INFORMATION")
   socket.emit("newmove", player.GetPlayerPosition());
 }
 
@@ -125,7 +125,8 @@ io.on('connection', function(socket){
   connections++;
   var pinger = setInterval(function(){ 
     socket.emit('ping', {users: connections});
-  }, 1000);
+    SendPosition(socket);
+  }, 5000);
 
   //console.log("New user connected");
   socket.on('mapreq', function(){
@@ -157,7 +158,9 @@ io.on('connection', function(socket){
 
 // Upon receiving a new tweet, do somthing.
 stream.on('tweet', function (tweet) {
-  //console.log("NEW TWEET");
+  console.log("NEW TWEET");
+
+  SendTweet(io,tweet);
 
   if(connections < 1){  //no one is connected
     return;
@@ -178,17 +181,11 @@ stream.on('tweet', function (tweet) {
     //console.log("No movement");
     return;
   }
-
   //console.log("Attempting to move player: " + direction);
   if(player.UpdateLocation(direction)){
     //console.log("Successful move! Sending position to clients");
     SendPosition(io);
-    SendTweet(io,tweet);
-
-    
-    
-    player.path.push({name: tweet.name, text: tweet.text});
-
+    player.path.push({name: tweet.user.name, text: tweet.text});
     console.log("TWEET: " + tweet.text);
     console.log("BY: " + tweet.user.name);
     console.log("---");
@@ -458,8 +455,6 @@ var Player = function(map){
     try{
       if(!this.tile.walls[directionIndex]){ //If there is no wall in the way
         //figure out which tile to move to:
-        
-
           this.location.x += this.directionArray[directionIndex].x;
           this.location.y += this.directionArray[directionIndex].y;
           if(this.CheckWin){
