@@ -1,10 +1,30 @@
 {
-  "name": "twitter-unity-controller",
+  "name": "save-dave",
   "version": "0.0.1",
   "description": "A way to interface with Unity via the public twitter stream",
   "dependencies": {
     "express": "^4.16.3",
     "socket.io": "^2.1.1",
     "twit": "^2.2.9"
-  }
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "main": "server.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jameshosken/save-dave.git"
+  },
+  "keywords": [
+    "twitter",
+    "unity",
+    "socket.io"
+  ],
+  "author": "James Hosken",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jameshosken/save-dave/issues"
+  },
+  "homepage": "https://github.com/jameshosken/save-dave#readme"
 }
