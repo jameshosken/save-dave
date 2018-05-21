@@ -196,6 +196,8 @@ stream.on('tweet', function (tweet) {
     direction = 3;
   }else{
     console.log("No movement");
+
+ 	tweetLock = false;
     return;
   }
   console.log("Attempting to move player: " + direction);
