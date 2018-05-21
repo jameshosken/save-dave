@@ -275,8 +275,11 @@ public class SocketHandler : MonoBehaviour
 
     private void ParseWinData(JSONObject j)
     {
+        Debug.Log("Parsing win data");
+        winScreen.SetActive(true);
+
         // Names array data will the list contained in the first list: list[0].list
-        //Debug.Log(j);
+        Debug.Log(j);
         namesText.text = "\nList of people who helped Dave:\n\n";
         List<string> names = new List<string>();
         for (int i = 0; i < j.list.Count; i++)
@@ -286,7 +289,7 @@ public class SocketHandler : MonoBehaviour
         }
 
         namesText.text += "\n\n";
-        winScreen.SetActive(true);
+        
 
 
 

@@ -106,7 +106,7 @@ var SendTweet = function(socket, tweet){
 }
 
 var SendWin = function(socket){
-	console.log("SENDING WIN");
+  console.log("SENDING WIN");
   var names = [];
 
   if(player.path.length < 1){
@@ -140,7 +140,7 @@ io.on('connection', function(socket){
     SendMap(socket);
     if(win){
     	win = false;
-    	SendWin(socket);
+    	SendWin(io);
     }
 
   }, 1000);
