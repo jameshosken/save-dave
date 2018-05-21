@@ -48,23 +48,23 @@ console.log("twitter requirements loaded successfully")
 
 // Set up new twit object
 //LOCAL
-var keys = require("./keys/keys.js");
-var T = new Twit({
-  consumer_key:         keys.getAPIKey(),
-  consumer_secret:      keys.getAPISecret(),
-  access_token:         keys.getAccessToken(),
-  access_token_secret:  keys.getAccessTokenSecret(),
-  timeout_ms:           60*1000,  // optional HTTP request timeout to apply to all requests.
-})
-
-//SERVER
+// var keys = require("./keys/keys.js");
 // var T = new Twit({
-//   consumer_key:         process.env.MY_API_KEY,
-//   consumer_secret:      process.env.MY_API_SECRET,
-//   access_token:         process.env.ACCESS_TOKEN,
-//   access_token_secret:  process.env.ACCESS_SECRET,
+//   consumer_key:         keys.getAPIKey(),
+//   consumer_secret:      keys.getAPISecret(),
+//   access_token:         keys.getAccessToken(),
+//   access_token_secret:  keys.getAccessTokenSecret(),
 //   timeout_ms:           60*1000,  // optional HTTP request timeout to apply to all requests.
 // })
+
+//SERVER
+var T = new Twit({
+  consumer_key:         process.env.MY_API_KEY,
+  consumer_secret:      process.env.MY_API_SECRET,
+  access_token:         process.env.ACCESS_TOKEN,
+  access_token_secret:  process.env.ACCESS_SECRET,
+  timeout_ms:           60*1000,  // optional HTTP request timeout to apply to all requests.
+})
 
 // Set up a listener for updates on the twitter stream
 var stream = T.stream('statuses/filter', { track: stringToTrack })
