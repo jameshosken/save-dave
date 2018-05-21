@@ -132,11 +132,14 @@ var SendWin = function(socket){
 io.on('connection', function(socket){
   console.log("A new user has connected");
   connections++;
-  
+
   var pinger = setInterval(function(){ 
+  	
     socket.emit('ping', {users: connections});
     SendPosition(socket);
     SendTweet(socket);
+    SendMap(socket);
+
   }, 1000);
 
   //console.log("New user connected");
@@ -254,7 +257,7 @@ var countUnvisitedCells = function(map){
 }
 
 var IsOutOfBounds = function(tile, map, xoff, yoff){
-  return (tile.x + xoff < 0 || tile.x + xoff > map.length || tile.y + yoff < 0 || tile.y + yoff > map[0].length);
+  return (tile.x + xoff < 0 || tile.x + xoff >= map.length || tile.y + yoff < 0 || tile.y + yoff >= map[0].length);
 }
 
 var getUnvisitedNeighbours = function(tile, map){
