@@ -458,6 +458,7 @@ var Player = function(map){
   this.CheckWin = function(){
   	if(this.location.x == this.map.getMapEnd().x && this.location.y == this.map.getMapEnd().y){
         //WIN! Reset and try again
+        console.log("Checkwin == true")
         OnWinCondition();
         return true;
     }else{
@@ -482,13 +483,21 @@ var Player = function(map){
 
           this.location.x += this.directionArray[directionIndex].x;
           this.location.y += this.directionArray[directionIndex].y;
+          
+          console.log("nextTilele:");
+    	  console.log(this.map.map[this.location.x][this.location.y]);
+          this.tile = this.map.map[this.location.x][this.location.y];
+
+          console.log("Tile:");
+    	  console.log(this.tile);
+
           if(this.CheckWin){
           	
           }
           else
           {	
           	
-          	this.tile = this.map.map[this.location.x][this.location.y];
+          	
             return true;
           }
         }else{
