@@ -206,12 +206,13 @@ stream.on('tweet', function (tweet) {
   }
   console.log("Attempting to move player: " + direction);
   if(player.UpdateLocation(direction)){
-    //console.log("Successful move! Sending position to clients");
-    //SendPosition(io);
     player.path.push({name: tweet.user.name, text: tweet.text});
     console.log("TWEET: " + tweet.text);
     console.log("BY: " + tweet.user.name);
     console.log("---");
+
+    console.log("PATH")
+    console.log(player.path);
 
   }
   else{
@@ -477,7 +478,7 @@ var Player = function(map){
     //Checking for walls should also catch out of bounds errors
     //console.log(this.tile.walls);
 			console.log("MOVING");
-			console.log(directionIndex);
+			//console.log(directionIndex);
           	console.log(this.directionArray[directionIndex].x + ", " + this.directionArray[directionIndex].y)
 
     		console.log("Walls:");
@@ -492,11 +493,11 @@ var Player = function(map){
           this.location.y += this.directionArray[directionIndex].y;
           
           console.log("nextTilele:");
-    	  console.log(this.map.map[this.location.x][this.location.y]);
+    	  //console.log(this.map.map[this.location.x][this.location.y]);
           this.tile = this.map.map[this.location.x][this.location.y];
 
-          console.log("Tile:");
-    	  console.log(this.tile);
+          //console.log("Tile:");
+    	  //console.log(this.tile);
 
           if(this.CheckWin){
           	
