@@ -52,10 +52,10 @@ console.log("twitter requirements loaded successfully")
 
 // Set up new twit object
 var T = new Twit({
-  consumer_key:         MY_API_KEY,
-  consumer_secret:      MY_API_SECRET,
-  access_token:         ACCESS_TOKEN,
-  access_token_secret:  ACCESS_SECRET,
+  consumer_key:         process.env.MY_API_KEY,
+  consumer_secret:      process.env.MY_API_SECRET,
+  access_token:         process.env.ACCESS_TOKEN,
+  access_token_secret:  process.env.ACCESS_SECRET,
   timeout_ms:           60*1000,  // optional HTTP request timeout to apply to all requests.
 })
 
