@@ -1,7 +1,7 @@
 console.log("Server managed to start. At least.")
 
 //Nasty global variables
-var stringToTrack = "direction";
+var stringToTrack = "#savedave";
 var mapSize = 5;
 var map;
 var player;
@@ -15,22 +15,19 @@ var connections = 0;
 //SETUP//
 /////////
 
-// Require all things socket.io
-//var io = require('socket.io')({transports: ['websocket'],});
+// Require all things socket.io 
+io = require('socket.io')({transports: "polling"});
 
-// var app = require('express')();
-// var http = require('http').Server(app);
-// var io = require('socket.io')(http);
+// Stuff to let socketio work on heroku:
+// io.configure(function () {  
+//   io.set("transports", ["xhr-polling"]); 
+//   io.set("polling duration", 10); 
+// });
 
-var io = require('socket.io')({transports: "websockets"});
-io.attach(3000);
-
-
-// http.listen(3000, function () {
-//   console.log('listening on *:8080');
-//});
+io.attach(process.env.PORT || 3000);
 
 console.log("socket.io requirements loaded successfully")
+console.log("io listening on port: " + process.env.PORT)
 
 // Require all things twitter
 var keys = require("./keys/keys.js");
@@ -302,6 +299,7 @@ var findPath = function(tile, map, searchStack){
 
 
 var OnWinCondition = function(){
+  console.log("GAME WON! WOO")
   mapSize++;
   SendWin(io);
   StartGame(mapSize);
@@ -419,6 +417,7 @@ var Player = function(map){
           this.location.y += this.directionArray[directionIndex].y;
           if(this.location == this.map.getMapEnd()){
             //WIN! Reset and try again
+
             OnWinCondition();
             return true;
           }else{
