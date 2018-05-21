@@ -37,6 +37,7 @@ const server = express()
   .use((req, res) => res.sendFile(INDEX) )
   .listen(PORT, () => console.log(`Listening on ${ PORT }`));
 
+console.log("IP: " + process.env.IP)
 
 const io = socketIO(server);
 // console.log("socket.io requirements loaded successfully")
