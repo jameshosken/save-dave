@@ -174,17 +174,11 @@ io.on('connection', function(socket){
 stream.on('tweet', function (tweet) {
   console.log("NEW TWEET");
 
-  //SendTweet(io, tweet);
-
-
   var tweetData = tweet.text.toLowerCase();
-
-
   if(tweetDataQueue.length > 5){
   	var first = tweetDataQueue.shift();
   }
   tweetDataQueue.push(tweet)
-
 
   var direction;
   if(tweetData.includes("up")){
@@ -353,10 +347,6 @@ var OnWinCondition = function(){
   StartGame(mapSize);
 }
 
-var RefreshExistingClients = function(){
-  SendMap(io);
-  SendPosition(io);
-}
 
 /////////////
 // CLASSES //
@@ -470,17 +460,22 @@ var Player = function(map){
   this.UpdateLocation = function(directionIndex){
     //Checking for walls should also catch out of bounds errors
     //console.log(this.tile.walls);
+			console.log("MOVING");
+          	console.log(this.directionArray[directionIndex].x + ", " + this.directionArray[directionIndex].y)
+
     try{
       if(!this.tile.walls[directionIndex]){ //If there is no wall in the way
         //figure out which tile to move to:
         console.log("Valid Move")
+
           this.location.x += this.directionArray[directionIndex].x;
           this.location.y += this.directionArray[directionIndex].y;
           if(this.CheckWin){
-          
+          	
           }
           else
-          {
+          {	
+          	
           	this.tile = this.map.map[this.location.x][this.location.y];
             return true;
           }
@@ -510,11 +505,14 @@ var StartGame = function(size){
   map.PopulateMap();
 
   player = new Player(map);
-
-  RefreshExistingClients();
-
 }
 
 StartGame(mapSize);
 
 
+// Dead functions
+
+// var RefreshExistingClients = function(){
+//   SendMap(io);
+//   SendPosition(io);
+// }
