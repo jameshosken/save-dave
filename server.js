@@ -46,7 +46,7 @@ const io = socketIO(server);
 
 
 // Require all things twitter
-var keys = require("./keys/keys.js");
+//var keys = require("./keys/keys.js");
 var Twit = require('twit')
 console.log("twitter requirements loaded successfully")
 
