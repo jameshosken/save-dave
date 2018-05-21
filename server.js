@@ -106,9 +106,11 @@ var SendTweet = function(socket, tweet){
 }
 
 var SendWin = function(socket){
-	console.log("SENDING WIN")
+	console.log("SENDING WIN");
   var names = [];
-  if(player.path.length == 0){
+
+  if(player.path.length < 1){
+  	console.log("No names on record :(");
   	socket.emit('win', {names: ["No names on record :("]})
   	return;
   }
@@ -116,6 +118,7 @@ var SendWin = function(socket){
   player.path.forEach(function(data){
     names.push(data.name);
   })
+
   console.log(names);
   socket.emit('win', {names: names})
 }
