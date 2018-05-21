@@ -508,7 +508,7 @@ var Player = function(map){
           //console.log("Tile:");
     	  //console.log(this.tile);
 
-          if(myPlayer.CheckWin){
+          if(myPlayer.CheckWin()){
           	return true;
           }
           else
