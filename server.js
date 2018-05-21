@@ -11,6 +11,8 @@ var connections = 0;
 
 var tweetDataQueue = [];
 
+var win = false;
+
 /////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -93,7 +95,7 @@ var SendMap = function(socket){
 }
 
 var SendPosition = function(socket){
-	console.log("SENDING POSITION INFORMATION")
+	//console.log("SENDING POSITION INFORMATION")
   socket.emit("newmove", player.GetPlayerPosition());
 }
 
@@ -139,6 +141,10 @@ io.on('connection', function(socket){
     SendPosition(socket);
     SendTweet(socket);
     SendMap(socket);
+    if(win){
+    	win = false;
+    	SendWin(socket);
+    }
 
   }, 1000);
 
@@ -196,7 +202,7 @@ stream.on('tweet', function (tweet) {
   console.log("Attempting to move player: " + direction);
   if(player.UpdateLocation(direction)){
     //console.log("Successful move! Sending position to clients");
-    SendPosition(io);
+    //SendPosition(io);
     player.path.push({name: tweet.user.name, text: tweet.text});
     console.log("TWEET: " + tweet.text);
     console.log("BY: " + tweet.user.name);
@@ -344,7 +350,8 @@ var findPath = function(tile, map, searchStack){
 var OnWinCondition = function(){
   console.log("GAME WON! WOO")
   mapSize++;
-  SendWin(io);
+  //SendWin(io);
+  win = true;
   StartGame(mapSize);
 }
 
